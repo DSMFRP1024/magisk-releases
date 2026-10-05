@@ -2,6 +2,70 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.4.6（versionCode 12）
+- 新增「**合并扩容**」——让**内部存储和外置盘在 `/sdcard` 上合并成同一个视图，容量相加**。
+  - 为什么必须自研：本机内核 `# CONFIG_OVERLAY_FS is not set`（overlay 合并做不了）、
+    `sm list-disks` 为空（vold 采纳/可合并存储也做不了）⇒ 模块自带一个**零依赖的用户态
+    union FUSE**（`bin/union_fuse`，同样是自写的 FUSE 7.26 协议，不依赖 libfuse）。
+  - 语义：读 = 外置优先、缺了再回内部；写一律落外置；改内部旧文件先 **copy-up**；
+    删 = 在 upper 打 `.wh.<名字>` **白障**（内部原文件不动）；`statfs` 上报**两盘容量之和**。
+  - 落地：合并视图先挂到 `/mnt/union`，再 `bind` 到 `/storage/emulated/0`
+    （只有挂在 FUSE 路径上 App 才看得见；bind 到 FUSE 底层 `/data/media/0` 会被回 `Cross-device link`）；
+    卸载顺序必须是「先拆合并 → 再拆 SD 绑定 → 最后卸主挂载点」（upper 目录就在主挂载点里）。
+  - WebUI「挂载位置」新增开关与合并目录名（`union_enabled` / `union_dir`，**默认关**，高侵入；
+    与 `sd_visible` 二选一、合并优先）；也可 `ctl.sh union-start|union-stop` 手动排错。
+- **真机验收（MI 8 / Android 13）**：`df /sdcard` 由 46G → **546G**（46G 内部 + 500G 外置）；
+  合并列表正确去重；写入落外置、copy-up 后内部原文未变；删除后**白障生效**且内部原文件仍在；
+  删除后同名重建、目录删后重建**都不会让旧内容复活**；在**真实 App 进程**（launcher / systemui /
+  settings）的命名空间里 `df` 与 `ls` 均为合并视图，且从 App ns 写入的文件确实落在外置盘。
+- 修掉 4 个在白障/删除语义上的缺陷（都是这会引入的）：
+  1) `resolve()` 完全不看白障 ⇒ 删了之后文件**还在**（最要命的一个）；
+  2) `readdir` 没让白障压过 upper ⇒ RMDIR 对非空目录失败留下的残留目录会带旧内容复现；
+  3) 新建同名文件/目录时不清旧白障 ⇒ 新文件会被自己的白障从列表里挡掉；
+  4) `RMDIR` 只打白障不真删 upper 子树 ⇒ 用户重建同名目录时**旧内容复活**。
+- 修掉一个**开机时序坑**：FBE 未解锁时 `/storage/emulated` 还是空壳，此时 `bind` 会先落在
+  tmpfs、随后被真正的 FUSE 挂载盖住 —— `/proc/mounts` 里有记录、状态显示"已接管"，
+  但实际完全没生效。现在 `do_union_start` 会先等 `/storage/emulated` 真正就绪，
+  绑完还用 `df` 复核一次 source 是不是 `union`，不通过就报错交给 `service.sh` 重试。
+- 加了一道**安全闸门**：只有 `/proc/mounts` 里 source 为 `union` 的挂载才会被卸。
+  此前 `do_union_stop` 会无条件 `umount /storage/emulated/0` —— 而它平时是**系统真实的
+  sdcardfs 挂载**，一旦在未启用合并时被调用，会让全部 App 掉存储。
+- ⚠️ 已知取舍：① 每 App 隔离失效 —— `/sdcard/Android/data` 原本是 sdcardfs 挂载（按 App 隔离），
+  被合并视图盖住后**内容不缺**（实测与下层完全一致）但不再隔离；② 删除是"打白障"，
+  内部存储的原文件不被真删、只是被遮住；③ 外置盘掉线时 `/sdcard` 只剩内部那份内容（读取正常、写入报错）。
+
+## v1.4.6（versionCode 12）
+- 新增「**合并扩容**」——让**内部存储和外置盘在 `/sdcard` 上合并成同一个视图，容量相加**。
+  - 为什么必须自研：本机内核 `# CONFIG_OVERLAY_FS is not set`（overlay 合并做不了）、
+    `sm list-disks` 为空（vold 采纳/可合并存储也做不了）⇒ 模块自带一个**零依赖的用户态
+    union FUSE**（`bin/union_fuse`，同样是自写的 FUSE 7.26 协议，不依赖 libfuse）。
+  - 语义：读 = 外置优先、缺了再回内部；写一律落外置；改内部旧文件先 **copy-up**；
+    删 = 在 upper 打 `.wh.<名字>` **白障**（内部原文件不动）；`statfs` 上报**两盘容量之和**。
+  - 落地：合并视图先挂到 `/mnt/union`，再 `bind` 到 `/storage/emulated/0`
+    （只有挂在 FUSE 路径上 App 才看得见；bind 到 FUSE 底层 `/data/media/0` 会被回 `Cross-device link`）；
+    卸载顺序必须是「先拆合并 → 再拆 SD 绑定 → 最后卸主挂载点」（upper 目录就在主挂载点里）。
+  - WebUI「挂载位置」新增开关与合并目录名（`union_enabled` / `union_dir`，**默认关**，高侵入；
+    与 `sd_visible` 二选一、合并优先）；也可 `ctl.sh union-start|union-stop` 手动排错。
+- **真机验收（MI 8 / Android 13）**：`df /sdcard` 由 46G → **546G**（46G 内部 + 500G 外置）；
+  合并列表正确去重；写入落外置、copy-up 后内部原文未变；删除后**白障生效**且内部原文件仍在；
+  删除后同名重建、目录删后重建**都不会让旧内容复活**；在**真实 App 进程**（launcher / systemui /
+  settings）的命名空间里 `df` 与 `ls` 均为合并视图，且从 App ns 写入的文件确实落在外置盘。
+- 修掉 4 个在白障/删除语义上的缺陷（都是这会引入的）：
+  1) `resolve()` 完全不看白障 ⇒ 删了之后文件**还在**（最要命的一个）；
+  2) `readdir` 没让白障压过 upper ⇒ RMDIR 对非空目录失败留下的残留目录会带旧内容复现；
+  3) 新建同名文件/目录时不清旧白障 ⇒ 新文件会被自己的白障从列表里挡掉；
+  4) `RMDIR` 只打白障不真删 upper 子树 ⇒ 用户重建同名目录时**旧内容复活**。
+- 修掉一个**开机时序坑**：FBE 未解锁时 `/storage/emulated` 还是空壳，此时 `bind` 会先落在
+  tmpfs、随后被真正的 FUSE 挂载盖住 —— `/proc/mounts` 里有记录、状态显示"已接管"，
+  但实际完全没生效。现在 `do_union_start` 会先等 `/storage/emulated` 真正就绪，
+  绑完还用 `df` 复核一次 source 是不是 `union`，不通过就报错交给 `service.sh` 重试。
+- 加了一道**安全闸门**：只有 `/proc/mounts` 里 source 为 `union` 的挂载才会被卸。
+  此前 `do_union_stop` 会无条件 `umount /storage/emulated/0` —— 而它平时是**系统真实的
+  sdcardfs 挂载**，一旦在未启用合并时被调用，会让全部 App 掉存储。
+- ⚠️ 已知取舍：① 每 App 隔离失效 —— `/sdcard/Android/data` 原本是 sdcardfs 挂载（按 App 隔离），
+  被合并视图盖住后**内容不缺**（实测与下层完全一致）但不再隔离；② 删除是"打白障"，
+  内部存储的原文件不被真删、只是被遮住；③ 外置盘掉线时 `/sdcard` 只剩内部那份内容（读取正常、写入报错）。
+
 ## v1.4.5（versionCode 11）
 - 新增「**SD 卡可见**」：在保留原有挂载点（`/mnt/...`）的同时，把 iSCSI 盘**再 bind 一份到
   `/storage/emulated/0/<名字>`**，于是文件管理器（MT管理器等）与各类 App 能在 **`/sdcard/<名字>`**

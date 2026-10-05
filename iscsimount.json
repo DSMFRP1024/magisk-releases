@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.5",
-  "versionCode": 11,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.5.zip",
+  "version": "v1.4.6",
+  "versionCode": 12,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.6.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.4.5.zip",
+  "zipFile": "iscsimount-v1.4.6.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 93920,
-  "sha256": "89c32cb1b80ad4077165c5aa770fe041805974d0b9de5329c1469b9f2e4a2d00",
+  "size": 126084,
+  "sha256": "47152e5aa0842d1b5ab0e35a0c249bc7e129cdf208aa62079dd080143e706403",
   "date": "2026-10-05",
-  "notes": "新增「SD 卡可见」：iSCSI 盘同时出现在 /sdcard/<名字>，文件管理器与 App 可直接读写"
+  "notes": "新增「合并扩容」：/sdcard 容量变成内部+外置之和（自研 union FUSE）"
 }
