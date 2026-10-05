@@ -1,0 +1,12 @@
+{
+  "version": "v1.4.3",
+  "versionCode": 9,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.3.zip",
+  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
+  "zipFile": "iscsimount-v1.4.3.zip",
+  "changelogFile": "CHANGELOG-iscsimount.md",
+  "size": 86815,
+  "sha256": "93b1b691f0d976b29e0515349cb8cc942965898789afa6e92832c39d1a88dbb4",
+  "date": "2026-10-05",
+  "notes": "格式化改一次性按钮 + 挂载参数改预设下拉，并修好格式化本身"
+}
