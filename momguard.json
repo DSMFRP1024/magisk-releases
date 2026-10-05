@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.6",
-  "versionCode": 26,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.4.6.zip",
+  "version": "v1.4.7",
+  "versionCode": 27,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.4.7.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.4.6.zip",
+  "zipFile": "momGuard-v1.4.7.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 136997,
-  "sha256": "cbf8ce6faca917b06ce37b66f52c260e2371475647d1ca2b2ed3b21e77065386",
+  "size": 140708,
+  "sha256": "f85639aacc7ef24634ebd37a12c7a18be38ce3cf07407b8a60a466aae956b1c5",
   "date": "2026-10-05",
-  "notes": "修「微信网页（域名）管控」卡片一直显示「读取中」"
+  "notes": "新增「检测更新」：服务页检查最新版本并一键下载安装"
 }

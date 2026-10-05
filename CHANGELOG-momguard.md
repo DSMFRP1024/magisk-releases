@@ -2,6 +2,13 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/momGuard
 
+## v1.4.7（versionCode 27）
+- 新增「检测更新」：WebUI「服务」页可检查最新版本（显示更新说明与包大小），并可**一键下载安装**
+  —— 下载后先校验 sha256，再交给 `magisk --install-module` 安装（重启手机后生效）。
+- `module.prop` 接上 Magisk 原生 **updateJson**，Magisk 应用的模块页也会提示更新。
+- 更新清单托管在公开仓 [DSMFRP1024/magisk-releases](https://github.com/DSMFRP1024/magisk-releases)
+  （模块源码仓仍是私有的）；设备端先走 raw、失败自动回退 jsDelivr。
+
 ## v1.4.6（versionCode 26）
 - 修「微信网页（域名）管控」卡片一直显示「读取中」的问题。
 

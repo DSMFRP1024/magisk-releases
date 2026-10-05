@@ -2,6 +2,13 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.4.4（versionCode 10）
+- 新增「检测更新」：WebUI 底部「检查更新」卡片可查看当前/最新版本与更新说明，
+  并可**一键下载安装** —— 下载后先校验 sha256，再交给 `magisk --install-module` 安装（重启手机后生效）。
+- `module.prop` 接上 Magisk 原生 **updateJson**，Magisk 应用的模块页也会提示更新。
+- 更新清单托管在公开仓 [DSMFRP1024/magisk-releases](https://github.com/DSMFRP1024/magisk-releases)
+  （模块源码仓仍是私有的）；设备端先走 raw、失败自动回退 jsDelivr。
+
 ## v1.4.3（versionCode 9）
 - 修好格式化本身：mkfs 命令按设备探测（Android 上 FAT32 用 toybox 的 `newfs_msdos`，
   原先写死的 `mkfs.vfat` 真机上根本不存在；`mkfs.f2fs` 同样缺失），且 mkfs 失败立即报错中止
