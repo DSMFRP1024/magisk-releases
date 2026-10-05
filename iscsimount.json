@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.7",
-  "versionCode": 13,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.7.zip",
+  "version": "v1.4.8",
+  "versionCode": 14,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.8.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.4.7.zip",
+  "zipFile": "iscsimount-v1.4.8.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 128875,
-  "sha256": "c71d8a23237e35888e52e194df1a216a02d0a973d641a4414e922115640f1f22",
-  "date": "2026-10-05",
-  "notes": "修两处日志误报：开机那条「合并扩容失败」是假警报；掉线原因不再误报成 EINTR"
+  "size": 135152,
+  "sha256": "4ee6e871e38a4a870771589951f783caecc38866e774772ca6142cedccc95f04",
+  "date": "2026-10-06",
+  "notes": "根治两个老问题：① 新增后台保活线程，空闲期也会应答目标的 NOP-In ping（原来空闲 60s 就被目标踢掉 ⇒ 重连/写失败不断上涨）；② 已挂载的 target 不再重复登录，直接复用当前会话信息，登录失败也给明确提示"
 }
