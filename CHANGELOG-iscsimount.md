@@ -2,6 +2,31 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.4.7（versionCode 13）
+修两处**只影响日志与自愈能力**的问题（功能本身正常，但会把人带偏），外加一处"失败没往上抛"。
+
+- **开机那条「合并扩容: bind 成功但 /storage/emulated/0 走的不是 union」是假警报。**
+  原因：bind 挂在 **init 的挂载命名空间**上，而复核用的 `df` 跑在模块自己的（service）命名空间，
+  开机瞬间**挂载传播还没到位**，于是读到旧的 sdcardfs 就判失败 —— 每次开机必报一条 ERR，
+  而实际上 union 是好的（`union_fuse` 的进程起始时间是开机那一次、`/sdcard` 也确实是合并视图）。
+  现在复核改为「**init ns 优先、再退当前 ns，并重试 10 次**」，判据从"最后一行是 union"放宽为
+  「任意一行是 union」。
+- **掉线日志里的 errno 数值不可信。** 上报失败原因原先直接打印裸 `errno`，而 `errno` 会被后续
+  任何系统调用覆盖：最典型的是 `send()` 被信号打断（EINTR=4）、`continue` 重试成功后 **errno 残留 4**；
+  此后若对端关闭连接（recv 返回 0=EOF），调用点读到的就是那个**陈旧的 4** ——
+  于是日志把「对端关闭连接」误报成「被信号打断(EINTR)」，排查方向被整个带偏。
+  现在统一改用 `recvn` 维护的 `g_last_errno`，并翻译成人话：
+  `对端关闭连接(EOF)` / `读超时(EAGAIN)` / `对端复位(RST)` / `被信号打断(EINTR)` / `errno=N`。
+- **EINTR 从「掉线」里摘出来**：EINTR 时读写都**原地重试、不拆会话**。重连会白丢一条 TCP 会话、
+  刷日志，短时间内反复 re-login 还可能撞上对端的会话表。
+- **失败终于会往上抛了**：`do_start` 的「可见性」步骤（union / SD 可见）失败时现在返回非 0，
+  于是 `service.sh` 那套 **6×10s 重试**真正生效 —— 覆盖「开机时 `/storage/emulated` 还没就绪、
+  当次 union 被跳过」这类场景。（v1.4.6 里 union 的失败被吞掉，重试从不触发。）
+
+> 真机回归（MI 8 / Android 13）：`df /sdcard` 仍为 **546G**；写新文件落 upper、copy-up 不动 lower、
+> 删除后白障生效且 lower 原文件完好、同名重建/目录重建都不复活旧内容 —— 全部复测通过；
+> `union-stop` 在未启用时仍是完全 no-op（不会误卸系统存储）。
+
 ## v1.4.6（versionCode 12）
 - 新增「**合并扩容**」——让**内部存储和外置盘在 `/sdcard` 上合并成同一个视图，容量相加**。
   - 为什么必须自研：本机内核 `# CONFIG_OVERLAY_FS is not set`（overlay 合并做不了）、
