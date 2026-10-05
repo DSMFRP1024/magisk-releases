@@ -2,6 +2,20 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.4.5（versionCode 11）
+- 新增「**SD 卡可见**」：在保留原有挂载点（`/mnt/...`）的同时，把 iSCSI 盘**再 bind 一份到
+  `/storage/emulated/0/<名字>`**，于是文件管理器（MT管理器等）与各类 App 能在 **`/sdcard/<名字>`**
+  下直接看到并**读写**。
+  - 关键点：这次 bind **必须做在 init 的挂载命名空间**（`nsenter -t 1 -m -- mount --bind`），
+    这样它会沿 shared 传播链自动出现在**所有 App 的命名空间**里（同时落到 `/mnt/user/0`、
+    `/mnt/installer/0`、`/mnt/androidwritable/0` 等别名）。
+  - 卸载同样跨命名空间清理；并记录「上次用过的 SD 路径」，改过文件夹名后旧路径也会被清掉。
+- 更正此前结论：早先说「`/sdcard` 下面挂不上、App 看不到」——那是**把挂载点直接选在 /sdcard 里**
+  时 sdcardfs 会跨设备报 `EXDEV`；**正确做法是另做一次 bind**（本次实现），实测有效。
+- WebUI 新增「SD 卡可见」开关 + 文件夹名（默认 `iscsidisk`），状态区显示当前 SD 路径与是否已挂上。
+- 真机验收（MI 8 / Android 13）：MT管理器**自身命名空间**可见 `/sdcard/iscsidisk`；
+  以 MT管理器真实 uid（10286 + 其属组）**读、写均通过**。
+
 ## v1.4.4（versionCode 10）
 - 新增「检测更新」：WebUI 底部「检查更新」卡片可查看当前/最新版本与更新说明，
   并可**一键下载安装** —— 下载后先校验 sha256，再交给 `magisk --install-module` 安装（重启手机后生效）。

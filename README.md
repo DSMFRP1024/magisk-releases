@@ -8,7 +8,7 @@
 | 模块 | 更新清单 | 最新版 | 包大小 | 源码仓（私有） |
 | --- | --- | --- | --- | --- |
 | **momGuard** | [momguard.json](momguard.json) | v1.4.7 | 140 708 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
-| **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.4.4 | 90 220 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
+| **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.4.5 | 93 920 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
 
 ## updateJson 格式
 
@@ -16,9 +16,9 @@
 
 ```json
 {
-  "version": "v1.4.6",
-  "versionCode": 26,
-  "zipUrl": "https://…/momGuard-v1.4.6.zip",
+  "version": "v1.4.7",
+  "versionCode": 27,
+  "zipUrl": "https://…/momGuard-v1.4.7.zip",
   "changelog": "https://…/CHANGELOG-momguard.md"
 }
 ```
