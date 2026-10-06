@@ -7,8 +7,11 @@
 
 | 模块 | 更新清单 | 最新版 | 包大小 | 源码仓（私有） |
 | --- | --- | --- | --- | --- |
-| **momGuard** | [momguard.json](momguard.json) | v1.4.7 | 140 708 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
+| **momGuard** | [momguard.json](momguard.json) | v1.5.0 | 151 774 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
 | **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.5.0 | 143 225 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
+
+> 另有配套服务端应用 **momGuard-hub**（飞牛 fnOS 上的 `.fpk`，接收手机上报的位置 / 步数 / 用量），
+> 不在本仓分发。
 
 ## updateJson 格式
 
@@ -16,9 +19,9 @@
 
 ```json
 {
-  "version": "v1.4.7",
-  "versionCode": 27,
-  "zipUrl": "https://…/momGuard-v1.4.7.zip",
+  "version": "v1.5.0",
+  "versionCode": 28,
+  "zipUrl": "https://…/momGuard-v1.5.0.zip",
   "changelog": "https://…/CHANGELOG-momguard.md"
 }
 ```
