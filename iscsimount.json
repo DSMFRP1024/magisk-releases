@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.8",
-  "versionCode": 14,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.8.zip",
+  "version": "v1.4.9",
+  "versionCode": 15,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.4.9.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.4.8.zip",
+  "zipFile": "iscsimount-v1.4.9.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 135152,
-  "sha256": "4ee6e871e38a4a870771589951f783caecc38866e774772ca6142cedccc95f04",
+  "size": 132010,
+  "sha256": "634b563e50bcd85a186751a14ac072ed99e4f2cb4511d00bc4d78a240bd39876",
   "date": "2026-10-06",
-  "notes": "根治两个老问题：① 新增后台保活线程，空闲期也会应答目标的 NOP-In ping（原来空闲 60s 就被目标踢掉 ⇒ 重连/写失败不断上涨）；② 已挂载的 target 不再重复登录，直接复用当前会话信息，登录失败也给明确提示"
+  "notes": "读吞吐 +29%（FUSE 层 28→36 MB/s，真机顺序读 25→30 MB/s）：读路径每条 SCSI READ 只搬 1 MiB，实测读吞吐几乎只由「单条命令大小」决定（256KiB=24.5 / 1MiB=37.9 / 4MiB=42.6 / 8MiB=44.5 MB/s），现在读单独用 4 MiB 上限（RCHUNK，写仍 1 MiB），且只在顺序访问时把连续 4 个 1 MiB 块合并成一条大命令一次回源（随机读仍单块）。顺带纠正：写路径的 MaxBurstLength 抬到 1 MiB 其实没生效（目标只回 262144），写侧天花板在 NAS 盘本身（并发写 23 / 单流 17 MB/s），客户端已无空间。新增 --ra N 可调跨度。"
 }
