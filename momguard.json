@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.1",
-  "versionCode": 29,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.1.zip",
+  "version": "v1.5.2",
+  "versionCode": 30,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.2.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.1.zip",
+  "zipFile": "momGuard-v1.5.2.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 153388,
-  "sha256": "32bda25d4c6bd28366e79e29867d4c72b6f9e235073ee73cc5cc0fc0e28dca3a",
+  "size": 157824,
+  "sha256": "8d2032dc216e0927484ddd320ee0b027033777a767615ca3b06cc08826d0072c",
   "date": "2026-10-07",
-  "notes": "修「蜂窝网络常联」关了移动数据不会自动开回来（MIUI 下全局 mobile_data 不变、需看每卡槽，且必须走 svc data enable）"
+  "notes": "修「蜂窝网络常联」切了卡二切不回来：settings multi_sim_data_call 只是影子键、切不动卡，改为 binder ISub.setDefaultDataSubId（新增 mgsim.dex）"
 }

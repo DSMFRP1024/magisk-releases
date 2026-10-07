@@ -2,6 +2,20 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/momGuard
 
+## v1.5.2（versionCode 30）
+
+- 修「**蜂窝网络常联**」**指定了卡一，但在系统设置里切到卡二后自动切不回来**
+  （日志里一次次记「已把数据卡改到卡1」，手机上实际还在用卡二 —— 功能在纯空转）。
+- **根因**：`settings put global multi_sim_data_call <subId>` **切不动卡**。
+  这个键只是 SubscriptionManagerService 默认值的**持久化影子**，写进去之后
+  `dumpsys isub` 的 `defaultDataSubId` / `activeDataSubId` 一个都不动；
+  静置 60s、`svc data disable/enable` 重评估、`am broadcast` 三种做法全是 no-op。
+- 改为走 binder `ISub.setDefaultDataSubId()`（AOSP 官方路径），新增 `bin/mgsim.dex`
+  （`app_process` + 反射调 @hide SystemApi）；**判定也改看权威字段 `defaultDataSubId`**。
+- **切卡不再 `svc data disable/enable`**：切卡本身不需要断流重评估，保留只会每次切卡断一次网。
+- 切卡后**回读权威字段复核**，不一致即判失败并在事件日志留痕「切换默认数据卡未生效」
+  （宁可报失败也不假报成功）。
+
 ## v1.5.1（versionCode 29）
 - **修「蜂窝网络常联」关了移动数据不会自动开回来** —— v1.5.0 上线后实测发现该功能其实等于没接。
   根因：判定只看 `settings global mobile_data`，而在 **MIUI / HyperOS** 的快捷设置里关数据时
