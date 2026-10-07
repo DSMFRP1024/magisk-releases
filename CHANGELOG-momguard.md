@@ -2,6 +2,18 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/momGuard
 
+## v1.5.1（versionCode 29）
+- **修「蜂窝网络常联」关了移动数据不会自动开回来** —— v1.5.0 上线后实测发现该功能其实等于没接。
+  根因：判定只看 `settings global mobile_data`，而在 **MIUI / HyperOS** 的快捷设置里关数据时
+  **这个值仍然是 `1`**，真正变 0 的是**每卡槽**的 `mobile_data0` / `mobile_data1`
+  （`telephony.registry` 的 `mIsDataEnabled` 同步变 false）⇒ 永远判成「数据是开的」。
+  顺带查出：用来恢复的 `settings put global mobile_data 1` 在这台 ROM 上**也不生效**，
+  真正管用的是 **`svc data enable`**。
+- 改法：判定改为**全局 + 目标卡槽双查**；恢复走 `svc data enable` 并**轮询确认**（不把「命令发出去了」
+  当成「数据开了」）；拉不起来则静默 120 秒并在事件日志记明确的「未生效」。
+- 真机（K40 / A16 / HyperOS）两种关法端到端复现通过：`svc data disable` 后 10 秒、
+  `settings put global mobile_data 0` 后 15 秒自动恢复。
+
 ## v1.5.0（versionCode 28）
 - 新增「**蜂窝网络常联**」（自动管家页）：周期性核对移动数据是否还开着、默认数据卡是不是指定的那张，
   被熄屏 / 省电策略降级就自动拉回；可指定由**卡一或卡二**承担数据（双卡机适用）。
