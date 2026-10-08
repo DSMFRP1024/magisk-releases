@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.4",
-  "versionCode": 32,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.4.zip",
+  "version": "v1.5.5",
+  "versionCode": 33,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.5.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.4.zip",
+  "zipFile": "momGuard-v1.5.5.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 161895,
-  "sha256": "2e991101f7cef44c35f97292af54ff9944fc05c7ee05814253a8f68e71da4fde",
+  "size": 162607,
+  "sha256": "ec43d352de144c79c55d68957b6e488eb4cef4a9338292fd601a5bb6b0f27da6",
   "date": "2026-10-08",
-  "notes": "WiFi 自动重连加「信号闸门」：只有扫到已保存的可连接网络（RSSI >= -80dBm）才重启无线，扫不到（离家在外）就不动作；连续失败改指数退避 45/90/180/300/600 秒，连上即复位；熄屏由「完全不动作」改为更保守地动作（最短 300 秒）。另含 v1.5.3 两项云端上报增强。"
+  "notes": "WiFi 自动重连改「只催促、不重启」：模块不再重启无线模块（实测 9.5 天里白重启 716 次，最密一段 41.6 分钟 53 次，反复把系统自己的自动连接打断）；只在「附近确实扫得到已保存的可连接网络（RSSI >= -80dBm）」时用 cmd wifi start-scan 催系统重扫一次，间隔亮屏最短 90 秒 / 熄屏最短 600 秒，按 90/180/360/600 秒指数退避，连上即复位；退避到顶仍连不上只记一条提示，不再强行动手。WebUI 新增「催促重扫」计数。"
 }
