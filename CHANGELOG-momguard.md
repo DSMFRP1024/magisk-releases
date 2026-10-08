@@ -2,6 +2,25 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/momGuard
 
+## v1.5.6（versionCode 34）
+
+- **定位改为「主动申请一次实时位置」，不再只读系统缓存。**
+  排查：`dumpsys location` 里所有 provider 都是 `ProviderRequest[OFF]` —— 系统里**根本没有应用在申请定位**，
+  于是模块只能把**同一条旧点反复上报**（实测 gps 缓存 **5.2 天前**、network **90 分钟前且精度 500 米**），
+  表象就是「轨迹从早上某个点才开始」。而 `cmd location` **没有**「取一次 fix」的子命令，只能走 framework API。
+- 新增 `bin/mgloc.dex`（`app_process` + `LocationManager.requestLocationUpdates`）：
+  - **定时上报**走 `net`（网络 / 融合，实测约 **0.2 秒**返回、精度约 **30 米**、省电）；
+  - **WebUI「立即上报一次」与服务端指令**走 `hybrid`（再加 GPS，室外 5~10 米，更准）；
+  - **申请失败自动回退**到原来的 `dumpsys` 缓存读取，不丢点。
+- WebUI 新增「定位方式」三档：**高精度（GPS+网络） / 省电（仅网络） / 关闭**；选「关闭」即回到旧行为。
+- **修掉一个潜伏缺陷**：**toast 提示一直静默失效** —— 调用 su 时用了裸命令，而守护进程的 `PATH`
+  里不含 `/product/bin`（本机 su 实际在 `/product/bin/su`），每次都是 `rc=127`。现已改用绝对路径解析。
+- 两个环境适配（都实测踩过）：① `LocationManager` **必须 uid 1000**（root 会抛
+  `SecurityException: invalid package "android" for uid 0`）；② `/data/adb` 权限是 `0700 root:root`，
+  uid 1000 **读不进去**（直接跑会 `Aborted`），所以先把 dex 复制到 `/data/local/tmp/mg/` 再执行。
+- 实测（K40 / A16 / HyperOS）：自动上报每 5 分钟一次、每次 `age≈0`（都是刚拿到的 fix）；
+  momGuard-hub 侧按时序正常收到，不再出现「同一条旧点反复上报」。
+
 ## v1.5.5（versionCode 33）
 
 - **把「WiFi 自动重连」彻底交还给系统：不再重启无线模块。**
