@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.6",
-  "versionCode": 34,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.6.zip",
+  "version": "v1.5.7",
+  "versionCode": 35,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.7.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.6.zip",
+  "zipFile": "momGuard-v1.5.7.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 170301,
-  "sha256": "4cd0f7049e690df927521884b316b0d527de02cc5ca484212f91fefbd8d55355",
+  "size": 171329,
+  "sha256": "31d0fdb929c3a943add9e316280427f231461b0376f941dd18b640b10328d912",
   "date": "2026-10-09",
-  "notes": "定位改为「主动申请一次实时位置」，不再只读系统缓存：以前只从系统缓存里捡最近一次定位，而系统里其实没有任何应用在申请定位（dumpsys location 里所有 provider 都是 ProviderRequest[OFF]），只能把同一条旧点反复上报（实测 gps 缓存 5.2 天前、network 90 分钟前且精度 500 米），表象就是「轨迹从早上某个点才开始」。现在定时上报主动向系统申请一次定位：只用网络/融合（实测约 0.2 秒返回、精度约 30 米、省电），WebUI「立即上报一次」与服务端指令则加用 GPS（更准，室外 5~10 米）；申请失败自动回退到原来的缓存读取，不会丢点。新增「定位方式」（高精度 / 省电 / 关闭），选「关闭」即回到旧行为。同时修掉一个潜伏缺陷：toast 提示一直静默失效——调用 su 时用了裸命令，而守护进程的 PATH 里不含 /product/bin（本机 su 实际在 /product/bin/su），每次都是 rc=127。"
+  "notes": "新增「手机端配置」上报与服务端远控（需配合 momGuard-hub v1.2.5）：模块会周期性（默认 10 分钟，配置改动后即时补推一份）把手机上的全部配置、时长限额规则与运行统计上报到局域网内的 momGuard-hub。在 hub 网页「设置 → 手机端配置」里可直接查看手机上的每一项配置并修改，改完约十几秒手机落盘生效，不必再连手机、也不用重刷模块；「使用统计」页同时新增「时长限额·受限情况」，显示远端各单应用 / 分组的当日用量、上限与受限进度（分组按组内成员合计判定，与手机端 limit_for 口径一致；0 分钟＝不限）。安全边界：访问密码（ui_pass）不参与远控；无线调试端口、免授权、安装拦截等敏感项在网页上修改需二次确认。未配置 hub、或服务端不支持该接口时上报静默跳过，不影响其它任何功能。"
 }

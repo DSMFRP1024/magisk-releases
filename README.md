@@ -7,7 +7,7 @@
 
 | 模块 | 更新清单 | 最新版 | 包大小 | 源码仓（私有） |
 | --- | --- | --- | --- | --- |
-| **momGuard** | [momguard.json](momguard.json) | v1.5.2 | 157 824 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
+| **momGuard** | [momguard.json](momguard.json) | v1.5.7 | 171 329 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
 | **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.5.0 | 143 225 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
 
 > 另有配套服务端应用 **momGuard-hub**（飞牛 fnOS 上的 `.fpk`，接收手机上报的位置 / 步数 / 用量），
@@ -47,4 +47,5 @@
 2. 改对应 `*.json` 的 `version` / `versionCode` / `zipFile` / `size` / `sha256` / `date` / `notes`，
    以及 `zipUrl` / `changelog` 两个完整 URL；
 3. 更新对应 `CHANGELOG-*.md`；
-4. 提交并推送 `main`。
+4. 同步本文件上方「**当前版本**」表的版本号与包大小（最容易忘，改完对着 `*.json` 核一遍）；
+5. 提交并推送 `main`。
