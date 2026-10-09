@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.7",
-  "versionCode": 35,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.7.zip",
+  "version": "v1.5.8",
+  "versionCode": 36,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.8.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.7.zip",
+  "zipFile": "momGuard-v1.5.8.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 171329,
-  "sha256": "31d0fdb929c3a943add9e316280427f231461b0376f941dd18b640b10328d912",
+  "size": 172485,
+  "sha256": "e1a86eaf4364928db9b2cda1d3e14393840766e7a6a6f63601fc560d7d79411f",
   "date": "2026-10-09",
-  "notes": "新增「手机端配置」上报与服务端远控（需配合 momGuard-hub v1.2.5）：模块会周期性（默认 10 分钟，配置改动后即时补推一份）把手机上的全部配置、时长限额规则与运行统计上报到局域网内的 momGuard-hub。在 hub 网页「设置 → 手机端配置」里可直接查看手机上的每一项配置并修改，改完约十几秒手机落盘生效，不必再连手机、也不用重刷模块；「使用统计」页同时新增「时长限额·受限情况」，显示远端各单应用 / 分组的当日用量、上限与受限进度（分组按组内成员合计判定，与手机端 limit_for 口径一致；0 分钟＝不限）。安全边界：访问密码（ui_pass）不参与远控；无线调试端口、免授权、安装拦截等敏感项在网页上修改需二次确认。未配置 hub、或服务端不支持该接口时上报静默跳过，不影响其它任何功能。"
+  "notes": "配置上报改为「事件驱动」：不再每 10 分钟定时推，改为按 config.conf/limits.conf 的指纹（大小+修改时间+累计拦截计数）判断，只有真的变了才上报，启动首轮仍补报一份。移除手机端「自动上传定位时间间隔」入口——该值今后只能由服务端（momGuard-hub v1.2.6「设置→定时上报间隔」）下发。配合服务端「先取后改」：新增 cfg-get 处理，服务端改配置前先让手机回报一次当前值，比对后确实不同才下发 cfg-set，消除「服务端每轮空推 + 手机反复拉取」的无谓往返；未配置 hub 时静默跳过。另修一处历史遗漏（WebUI 页脚版本号与资源 ?v= 上次漏同步）。无破坏性变更。"
 }
