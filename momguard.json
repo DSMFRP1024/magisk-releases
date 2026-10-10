@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.8",
-  "versionCode": 36,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.8.zip",
+  "version": "v1.5.9",
+  "versionCode": 37,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.9.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.8.zip",
+  "zipFile": "momGuard-v1.5.9.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 172485,
-  "sha256": "e1a86eaf4364928db9b2cda1d3e14393840766e7a6a6f63601fc560d7d79411f",
-  "date": "2026-10-09",
-  "notes": "配置上报改为「事件驱动」：不再每 10 分钟定时推，改为按 config.conf/limits.conf 的指纹（大小+修改时间+累计拦截计数）判断，只有真的变了才上报，启动首轮仍补报一份。移除手机端「自动上传定位时间间隔」入口——该值今后只能由服务端（momGuard-hub v1.2.6「设置→定时上报间隔」）下发。配合服务端「先取后改」：新增 cfg-get 处理，服务端改配置前先让手机回报一次当前值，比对后确实不同才下发 cfg-set，消除「服务端每轮空推 + 手机反复拉取」的无谓往返；未配置 hub 时静默跳过。另修一处历史遗漏（WebUI 页脚版本号与资源 ?v= 上次漏同步）。无破坏性变更。"
+  "size": 172645,
+  "sha256": "27fd7ff344e881cc746caf4cd7b3c81c945d7f4b3b6a9ee59ad26c7fe8c6f45d",
+  "date": "2026-10-10",
+  "notes": "指令轮询间隔改为可在服务端设置：手机每轮回 momGuard-hub 取指令的间隔此前硬编码为 15 秒，这次把它做成配置项 cmd_interval（与「定时上报间隔」同一套「服务端权威 + 先取后改」机制，由 hub 用 cfg-set 下发，落盘后即时生效、不用重刷模块）——因为实测它才是耗电主控项：一台 K40 上 13.9 小时里蜂窝射频活跃占了 30.7%，而同期 GPS 传感器只活跃 2 分 15 秒（0.27%）；调大它能明显省电，代价是「下发指令 / 立即拉取」的响应同步变慢（区间 15–1800 秒，默认 15，与旧硬编码值一致 ⇒ 升级前后行为不变）。另修一个升级路径的隐患：老设备的 config.conf 已存在，安装脚本不会补本版新增的键，会导致服务端下发被当「未知键」丢弃 —— 现在 guard 启动时会幂等补齐。需配合 momGuard-hub v1.3.0（设置页新增「指令轮询间隔」）。无破坏性变更。"
 }
