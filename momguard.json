@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.10",
-  "versionCode": 38,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.10.zip",
+  "version": "v1.5.11",
+  "versionCode": 39,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.11.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.10.zip",
+  "zipFile": "momGuard-v1.5.11.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 181248,
-  "sha256": "fc77a85c792fc7d9b779db46197805b28600dd23db1a014e0606041ab5e6598f",
+  "size": 181885,
+  "sha256": "904e8a619ec0c4d41727c1c937646dfe4eaae03894c2873398f7de9ff518ff55",
   "date": "2026-10-11",
-  "notes": "新增两项能力（都需配合 momGuard-hub v1.3.1）：① 电量随定位一并上报 —— 每次定时定位顺带读一次电量挂进原有上报包，不加进程、不加唤醒；服务端按接收时间独立存点（不与定位按 dev+ts 去重那套混在一起），所以逐日电量曲线不会因为定位被去重而丢点。② 霸屏提醒 + 单向喊话外放 —— 新增 mgfull.dex：收到 alert 指令后用 su 1000 起一个全屏 overlay 窗口盖在别的 App 上，并持 FULL_WAKE_LOCK 自动点亮屏幕，时长 3–3600 秒可设、也能点「知道了」提前关；新增 mgplay.dex：在 hub 网页录一段话上传成 WAV，手机取到后以最大媒体音量外放（播完自删）。本版只做单向喊话，双向实时对讲不在本版。打包新增这两个 dex 的存在性与字节一致性校验。无破坏性变更，升级安装即可。"
+  "notes": "访问密码改由服务端统一管理（需配合 momGuard-hub v1.3.3）：手机端 WebUI 的「访问密码」设置入口撤掉，只显示已设置/未设置，改在 hub 的「手机端配置」里设置/修改/清除；明文只在浏览器本地做 SHA-256，服务端与手机端都只见到哈希。修复了此前在手机端设过密码、服务端却不可见也无法下发的问题（旧版服务端把 ui_pass 当只读且按「1」判断是否已设置，永远显示未设置）。新增 limits-apply 指令：服务端可整表下发「时长限额」规则（单应用 / 分组），手机端逐行校验后经 ctl.sh 落盘生效。无破坏性变更，升级安装即可。"
 }
