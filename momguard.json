@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.11",
-  "versionCode": 39,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.11.zip",
+  "version": "v1.5.12",
+  "versionCode": 40,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.12.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.11.zip",
+  "zipFile": "momGuard-v1.5.12.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 181885,
-  "sha256": "904e8a619ec0c4d41727c1c937646dfe4eaae03894c2873398f7de9ff518ff55",
-  "date": "2026-10-11",
-  "notes": "访问密码改由服务端统一管理（需配合 momGuard-hub v1.3.3）：手机端 WebUI 的「访问密码」设置入口撤掉，只显示已设置/未设置，改在 hub 的「手机端配置」里设置/修改/清除；明文只在浏览器本地做 SHA-256，服务端与手机端都只见到哈希。修复了此前在手机端设过密码、服务端却不可见也无法下发的问题（旧版服务端把 ui_pass 当只读且按「1」判断是否已设置，永远显示未设置）。新增 limits-apply 指令：服务端可整表下发「时长限额」规则（单应用 / 分组），手机端逐行校验后经 ctl.sh 落盘生效。无破坏性变更，升级安装即可。"
+  "size": 182658,
+  "sha256": "d661798b16d0e455f88879349e2b6ec1c9cfa1945483d0c926818e186f65af27",
+  "date": "2026-10-12",
+  "notes": "配套服务端 momGuard-hub v1.3.7，补齐「云端查看 / 修改黑白名单」。此前手机端配置快照只上报 config.conf / limits.conf / stats.conf 三份，而「小程序名单」（state/miniapp.list）与「微信网页域名名单」（state/webrule.list）从不在上报集合里，于是服务端只能看到管控开关、看不到名单条目（表现为「应用管控页看不到黑白名单、没法控制」）。本版：① 配置快照新增 [mp]/[web] 两节，把两份名单整份报给服务端；② 新增 mp-apply / web-apply 两条下行指令，服务端可把整张名单表（payload 用 ; 连接每行、行内 TAB）下发到手机，手机还原成换行交给既有 ctl.sh mp-put / web-put 逐行校验落地。本版手机端无新增配置项、无破坏性变更，升级安装即可。"
 }
