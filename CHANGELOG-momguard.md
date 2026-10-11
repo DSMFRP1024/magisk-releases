@@ -2,6 +2,27 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/momGuard
 
+## v1.5.10（versionCode 38）
+
+- **电量随定位一并上报**：每次**定时定位**时顺带读一次电量（`/sys/class/power_supply/battery/`
+  的 `capacity` + `status`，取不到就退回 `dumpsys battery`），作为 `batt` / `chg` 两个字段
+  挂进既有的定位上报包里 —— **不加进程、不加唤醒**，只是把本来就要发的那一次请求多用几十字节。
+  服务端收到后**按接收时间独立入点**（不与定位按 `dev+ts` 去重的那套混在一起），
+  于是「同一次定位被去重」不会连带丢掉电量，逐日曲线才能连续。需配合 **momGuard-hub v1.3.1**。
+- **霸屏提醒（全屏提醒）**：新增 `bin/mgfull.dex`（源码 `mgfull/FullAlertMain.java`）。
+  hub 下发 `alert` 指令（payload = `秒|文本`），手机用 `su 1000` + `app_process` 起
+  `mg.FullAlertMain`，弹一个 `TYPE_APPLICATION_OVERLAY` 的**全屏窗口**盖在别的 App 上，
+  同时持 `FULL_WAKE_LOCK | ACQUIRE_CAUSES_WAKEUP` **自动点亮屏幕**，倒计时到点自动关，
+  孩子也可点「知道了」提前关。时长 3–3600 秒由服务端给。**不走 `toast_on` 开关、不受节流**
+  影响（这是人工下发的）。身份要求与既有的 toast 完全一样：必须 `su 1000`（uid 1000 才持有
+  `SYSTEM_ALERT_WINDOW`，root/shell 会被拒），dex 先 stage 到 `/data/local/tmp` 下。
+- **喊话外放（单向）**：新增 `bin/mgplay.dex`（源码 `mgplay/PlayMain.java`）。在 hub 网页
+  录一段话上传成 WAV，手机取到 `voice` 指令后 `curl` 下载到 `/data/local/tmp/mg/audio/`
+  （uid 1000 读得到的位置），再用 `su 1000` + `app_process` 起 `mg.PlayMain`，
+  以**最大媒体音量**外放（播完自删）。本版**只做单向喊话**，双向实时对讲不在本版。
+- 打包环节新增 `mgfull.dex` / `mgplay.dex` 的存在性与 zip 内字节一致性校验（缺一个就中止打包）。
+- 无破坏性变更；升级安装即可，老设备无需改配置。
+
 ## v1.5.9（versionCode 37）
 
 - **指令轮询间隔改为可在服务端设置**：手机每轮回 momGuard-hub 取指令的间隔此前硬编码为

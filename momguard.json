@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.9",
-  "versionCode": 37,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.9.zip",
+  "version": "v1.5.10",
+  "versionCode": 38,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.10.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.9.zip",
+  "zipFile": "momGuard-v1.5.10.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 172645,
-  "sha256": "27fd7ff344e881cc746caf4cd7b3c81c945d7f4b3b6a9ee59ad26c7fe8c6f45d",
-  "date": "2026-10-10",
-  "notes": "指令轮询间隔改为可在服务端设置：手机每轮回 momGuard-hub 取指令的间隔此前硬编码为 15 秒，这次把它做成配置项 cmd_interval（与「定时上报间隔」同一套「服务端权威 + 先取后改」机制，由 hub 用 cfg-set 下发，落盘后即时生效、不用重刷模块）——因为实测它才是耗电主控项：一台 K40 上 13.9 小时里蜂窝射频活跃占了 30.7%，而同期 GPS 传感器只活跃 2 分 15 秒（0.27%）；调大它能明显省电，代价是「下发指令 / 立即拉取」的响应同步变慢（区间 15–1800 秒，默认 15，与旧硬编码值一致 ⇒ 升级前后行为不变）。另修一个升级路径的隐患：老设备的 config.conf 已存在，安装脚本不会补本版新增的键，会导致服务端下发被当「未知键」丢弃 —— 现在 guard 启动时会幂等补齐。需配合 momGuard-hub v1.3.0（设置页新增「指令轮询间隔」）。无破坏性变更。"
+  "size": 181248,
+  "sha256": "fc77a85c792fc7d9b779db46197805b28600dd23db1a014e0606041ab5e6598f",
+  "date": "2026-10-11",
+  "notes": "新增两项能力（都需配合 momGuard-hub v1.3.1）：① 电量随定位一并上报 —— 每次定时定位顺带读一次电量挂进原有上报包，不加进程、不加唤醒；服务端按接收时间独立存点（不与定位按 dev+ts 去重那套混在一起），所以逐日电量曲线不会因为定位被去重而丢点。② 霸屏提醒 + 单向喊话外放 —— 新增 mgfull.dex：收到 alert 指令后用 su 1000 起一个全屏 overlay 窗口盖在别的 App 上，并持 FULL_WAKE_LOCK 自动点亮屏幕，时长 3–3600 秒可设、也能点「知道了」提前关；新增 mgplay.dex：在 hub 网页录一段话上传成 WAV，手机取到后以最大媒体音量外放（播完自删）。本版只做单向喊话，双向实时对讲不在本版。打包新增这两个 dex 的存在性与字节一致性校验。无破坏性变更，升级安装即可。"
 }
