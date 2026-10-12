@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.12",
-  "versionCode": 40,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.12.zip",
+  "version": "v1.5.13",
+  "versionCode": 41,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.13.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
-  "zipFile": "momGuard-v1.5.12.zip",
+  "zipFile": "momGuard-v1.5.13.zip",
   "changelogFile": "CHANGELOG-momguard.md",
-  "size": 182658,
-  "sha256": "d661798b16d0e455f88879349e2b6ec1c9cfa1945483d0c926818e186f65af27",
-  "date": "2026-10-12",
-  "notes": "配套服务端 momGuard-hub v1.3.7，补齐「云端查看 / 修改黑白名单」。此前手机端配置快照只上报 config.conf / limits.conf / stats.conf 三份，而「小程序名单」（state/miniapp.list）与「微信网页域名名单」（state/webrule.list）从不在上报集合里，于是服务端只能看到管控开关、看不到名单条目（表现为「应用管控页看不到黑白名单、没法控制」）。本版：① 配置快照新增 [mp]/[web] 两节，把两份名单整份报给服务端；② 新增 mp-apply / web-apply 两条下行指令，服务端可把整张名单表（payload 用 ; 连接每行、行内 TAB）下发到手机，手机还原成换行交给既有 ctl.sh mp-put / web-put 逐行校验落地。本版手机端无新增配置项、无破坏性变更，升级安装即可。"
+  "size": 183681,
+  "sha256": "3476985a5f3012e71b9129353797d9672a911dee041994e8d0a9595bc90fada1",
+  "date": "2026-10-13",
+  "notes": "每条上报都带上**硬件识别码**（hw），配套服务端 momGuard-hub v1.4.0。此前服务端拿手机自报的「设备标识」（dev_tag）当全库主键，于是改一个称呼就等于在服务端换了另一台设备：旧名字下的历史当场失联、凭空多出一台幽灵设备、排在旧名字下等它的指令永远取不到（v1.3.13 只能把 dev_tag 设成只读来挡）。本版起每条上报（定位 / 用量 / 配置快照 / 步数库 / 指令轮询）都带上 hw（取值优先级 ro.serialno → ro.boot.serialno → android_id），服务端据此认定「你是哪台设备」，dev_tag 退化成纯显示名 —— 怎么改都不会丢历史、不会多出设备，dev_tag 也重新可以从服务端下发修改。手机端无新增配置项、无破坏性变更；硬件识别码读不到时自动退回旧行为。"
 }
