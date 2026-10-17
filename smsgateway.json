@@ -1,0 +1,12 @@
+{
+  "version": "v1.0.5",
+  "versionCode": 6,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/smsGateway-v1.0.5.zip",
+  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-smsgateway.md",
+  "zipFile": "smsGateway-v1.0.5.zip",
+  "changelogFile": "CHANGELOG-smsgateway.md",
+  "size": 43913,
+  "sha256": "c628ed43175363f43706480e91522b801f18c898e06b22e3609ed91f21f83517",
+  "date": "2026-10-17",
+  "notes": "新增「检查更新 + 一键安装」：手机端 WebUI 多了升级卡片（当前/最新版本、清单来源、包大小、更新摘要），点一下自动下载→校验大小与 sha256→magisk --install-module，装完重启生效；Magisk 模块页也按 updateJson 自动提示新版本。同时补上 v1.0.4 的 action.sh —— Magisk 模块卡片上的「操作」按钮，点一下直接打开 WebUI（此前只有 KernelSU/APatch 认的 webroot/，Magisk 里没有任何入口）。升级安装不覆盖 config.conf。"
+}
