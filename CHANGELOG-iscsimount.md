@@ -2,6 +2,68 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.5.1（versionCode 17）
+**union_fuse 从单线程改多 worker**：慢请求只占住一个 worker，其余继续服务。
+
+### 为什么改：一次卡死，整个 `/sdcard` 陪葬
+
+单线程时，只要有一个请求卡在慢 IO 上（upper 在外置盘，一次 copy-up 可能几百毫秒），
+后面积压的全部请求一起排队。实测（2026-10-17）：
+
+| 指标 | 故障时 |
+|---|---|
+| 状态为 `D` 的进程 | **13 个**（3 个 `df` 卡 594–975 s + 10 个 App） |
+| `loadavg`（6 核） | **28.40** |
+| `/sys/fs/fuse/connections/104/waiting` | 15 → 16，**只增不减** |
+| `/mnt/iscsi`、`/mnt/iscsidisk` 响应 | **0 秒**（iSCSI 层完全健康） |
+| `/mnt/union`、`/sdcard` 响应 | **超时 5–8 秒** |
+
+iSCSI 层四个 worker 全在 `ppoll` 等活 —— 故障**不在** iSCSI，而在合层。
+
+### 三条硬约束（少一条就出静默损坏或收工挂死）
+
+1. **`/dev/fuse` 必须 `O_RDWR | O_NONBLOCK`**。两个 worker 同时 poll 到同一条请求时，
+   抢输的那个会在阻塞 `read` 上永久卡住，回不到 poll 复查 `g_stop`，收工 `pthread_join` 直接挂死；
+   `read` 拿 `EAGAIN` 必须 `continue` 不能 `break`（`break` = worker 永久退出，线程数悄悄变少）。
+   `reply` 的 `write` 同样要 EAGAIN 重试，丢了回复 = 内核里那条请求永远挂着。
+2. **请求 / 回复 / 读暂存三块缓冲必须 worker 私有**。老实现是全局 `g_obuf` / `g_rbuf`，
+   多线程下会把 A 文件的数据回给 B，**而且完全不报错**。
+3. **锁只罩共享元数据，真实 IO 一律在锁外**，否则并发等于没加。
+
+### 两个不是「加把锁」就完事的地方
+
+- `id2path` 改为返回 **4 槽 `__thread` 轮转缓冲的拷贝**。`id_forget` 会 `free(path)`，
+  裸指针在多线程下就是 UAF；4 槽是因为 RENAME 分支会**同时**持有 `oparent` 与 `nparent`，
+  单槽会互相覆盖成错路径。
+- `copy_up` 用**独立**的 `g_cp_lock`。不加锁 → 两个 worker 同时写同一个未 copy-up 的文件会
+  双双 `O_TRUNC` 交错写坏；用 `g_lock` → 搬几 GB 文件会把 node/fh 表和 LOOKUP 全堵死，
+  等于换个地方复现单线程停摆。
+
+`INIT` 的 `max_background` 12→128、`congestion` 9→96（旧值是单线程时代定的，
+排队一到 12 就停住，4 个 worker 喂不饱）。
+
+### 顺带补上的自救能力
+
+- `ctl.sh` 新增 `fuse_conn_of` / `do_union_abort` / `union_fuse_stuck` / `do_union_check` /
+  `do_union_revive`；`do_union_stop` 重写为「**先判 D → `abort` 断连 → TERM/KILL → 逐个带超时卸载**」。
+  关键认知：FUSE 卡死时 **`kill -9` 无效、`umount` 超时**（`request_wait_answer(nofail)`
+  走 `TASK_UNINTERRUPTIBLE`），唯一解药是往
+  `/sys/fs/fuse/connections/<minor>/abort` 写 `1`。
+- `do_union_start` **删掉 `df` 验证**改纯文本判据（`df` 走 `statfs` → FUSE 请求，
+  union 一卡 `df` 就进 D，SIGKILL 都杀不掉，实测把 `ctl.sh start` 拖挂 180 s+）。
+- `service.sh` 加 **30 s 常驻看门狗**，连续 3 轮异常才动手 —— 正常 IO 也会有瞬时 D，
+  单轮判 D 会误杀。
+
+### 验证
+
+隔离挂载点（完全不碰生产）：并发读 8/8、混合 8 读 + 8 写 8/8、4×4 MiB 并发读 4/4 **全部内容一致**；
+`TERM` 后 **0 秒干净退出**、无挂载残留、线程全回收。
+
+切生产后：5 个挂载点齐全、8 MiB `/sdcard` ↔ upper **md5 MATCH**、8 路并发读 8/8 正确、
+`D` 进程 **0**、`loadavg` 0.53、`union-check` 0 s 返回、重连 0 / 写失败 0。
+
+> 退回单线程不用换二进制：`ctl.sh` / `config.default` 里把 `union_workers` 改成 `1`。
+
 ## v1.5.0（versionCode 16）
 **并发 I/O 窗口（QD>1）**：写 **13 → 35~38 MB/s**（约 **2.9x**，四轮稳定）、
 读 **26~28 → 43~47 MB/s**。写侧之前那句「16 MB/s 就是 NAS 写天花板」**是错的** ——

@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.0",
-  "versionCode": 16,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.0.zip",
+  "version": "v1.5.1",
+  "versionCode": 17,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.1.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.5.0.zip",
+  "zipFile": "iscsimount-v1.5.1.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 143225,
-  "sha256": "8782f3e51b40c1bcf66c128f0ee7a405576a0f1267e8229edfbe7942b6be6e59",
-  "date": "2026-10-06",
-  "notes": "并发 I/O 窗口（QD>1）：写 13→35~38 MB/s（约 2.9x）、读 26~28→43~47 MB/s。真因：写路径「发一条等一条」+ 全局互斥 ⇒ 队列深度恒为 1，吞吐被往返延迟锁死在 16~19；新增 iscsi_io() 一次放飞 N 条 SCSI 命令、按 ITT 路由收包（ExpStatSN 取最大值容忍乱序），回写攒够 8 个整脏块批量放飞、FUSE 守护改 4 worker（缓冲每线程独立）。关键杠杆是开启内核 FUSE_WRITEBACK_CACHE —— 之前漏要，内核只能下送 4 KiB 碎片；开启后页缓存攒批，单条最大 4096→131072 B、批量回写 1.24→10.7 段/次。正确性：源→/sdcard→裸 exfat→重启守护+丢全部缓存重读，四路 md5 一致并拉回 PC 交叉核对。"
+  "size": 152436,
+  "sha256": "ad78828f11bfcdb89002545aa8b5ff70d8e2b3c6292a19ba03f51ef259ebe581",
+  "date": "2026-10-18",
+  "notes": "union_fuse 从单线程改多 worker（默认 4，union_workers=1..16 可配）。动因：单线程时任意一个请求卡在慢 IO 上（upper 在外置盘，一次 copy-up 可能几百毫秒）整个 /sdcard 就集体停摆 —— 实测把机器拖进 13 个 D 进程、load 28，只能靠 /sys/fs/fuse/connections/<minor>/abort 强制断连才救回来。改后慢请求只占住一个 worker，其余继续服务，故障被隔离在单个请求内。并补上自救能力：ctl.sh 新增 fuse_conn_of / do_union_abort / union_fuse_stuck / do_union_check，卸载前先判 D 状态再 abort；service.sh 加 30s 常驻看门狗（连续 3 轮异常才动手，避免正常 IO 的瞬时 D 误杀）。验证：隔离挂载点并发读 8/8、混合 8读+8写 8/8、4×4MiB 并发读 4/4 全一致，TERM 后 0 秒干净退出无残留；生产 5 个挂载点齐全、8 MiB /sdcard↔upper md5 MATCH、D 进程 0、load 0.53、重连 0 写失败 0。"
 }
