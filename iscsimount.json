@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.1",
-  "versionCode": 17,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.1.zip",
+  "version": "v1.5.2",
+  "versionCode": 18,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.2.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.5.1.zip",
+  "zipFile": "iscsimount-v1.5.2.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 152436,
-  "sha256": "ad78828f11bfcdb89002545aa8b5ff70d8e2b3c6292a19ba03f51ef259ebe581",
-  "date": "2026-10-18",
-  "notes": "union_fuse 从单线程改多 worker（默认 4，union_workers=1..16 可配）。动因：单线程时任意一个请求卡在慢 IO 上（upper 在外置盘，一次 copy-up 可能几百毫秒）整个 /sdcard 就集体停摆 —— 实测把机器拖进 13 个 D 进程、load 28，只能靠 /sys/fs/fuse/connections/<minor>/abort 强制断连才救回来。改后慢请求只占住一个 worker，其余继续服务，故障被隔离在单个请求内。并补上自救能力：ctl.sh 新增 fuse_conn_of / do_union_abort / union_fuse_stuck / do_union_check，卸载前先判 D 状态再 abort；service.sh 加 30s 常驻看门狗（连续 3 轮异常才动手，避免正常 IO 的瞬时 D 误杀）。验证：隔离挂载点并发读 8/8、混合 8读+8写 8/8、4×4MiB 并发读 4/4 全一致，TERM 后 0 秒干净退出无残留；生产 5 个挂载点齐全、8 MiB /sdcard↔upper md5 MATCH、D 进程 0、load 0.53、重连 0 写失败 0。"
+  "size": 154106,
+  "sha256": "83fb7c443a9bbbd7865e0cb4aef38b3eda098eb28203145825e02f24d4a4ba0c",
+  "date": "2026-10-19",
+  "notes": "加「自我递归」启动自检，把「运行中永久卡死」变成「启动即报错」。事故（2026-10-18 真机）：一个 10-05 开机起的遗留看门狗进程（旧版 ctl.sh 的 union-guard 常驻循环）活了 13 天，新版 ctl.sh 早已删掉该子命令却换不掉它 —— 它每 20-30 秒用 `--upper /storage/emulated/0`（正是 union 自己的 bind 目标）且不带 --workers 重启，读 upper 的请求递归回本连接，4 个 worker 全堵在 newfstatat、waiting=9 只增不减、kill -9 与 umount 全失效。三道防线：① union_fuse 在挂载前/后各查一次 /proc/self/mountinfo（纯文本，不触发 FUSE），upper 落在任何 union 挂载点内就拒绝启动或立即卸载退出；② ctl.sh 的重叠检查从固定的两个路径扩到 /proc/mounts 里全部 union 挂载点（bind 会传播出 4 个兄弟点，还可能是上次残留）；③ union-guard 显式报废弃 exit 2，常驻看门狗只能由 service.sh 驱动单轮 union-check。验证：事故参数 0 秒拒绝启动且无残留挂载；合法 upper 在隔离点正常挂载 146 条目、4 线程、kill 后 0 残留；生产 5 个挂载点齐全、waiting=0、ls /sdcard 0.43s、读写 OK。"
 }

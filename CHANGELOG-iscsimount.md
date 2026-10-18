@@ -2,6 +2,50 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.5.2（versionCode 18）
+**加「自我递归」启动自检：把「运行中永久卡死」变成「启动即报错」。**
+
+### 事故经过（2026-10-18 真机）
+
+`/sdcard` 整体卡死：`ls` 25 秒不返回，而 `/mnt/iscsidisk` 0.4 秒正常。
+
+| 指标 | 实测 |
+|---|---|
+| `/sys/fs/fuse/connections/213/waiting` | 9，三轮采样一动不动 |
+| union_fuse 的 4 个 worker | 全在 `newfstatat`，其中 1 个 `D`、3 个 `S` |
+| `/proc/<pid>/cmdline` | `--upper /storage/emulated/0`（**正是 union 自己的 bind 目标**），且**没有 `--workers`** |
+| 父进程 | `sh ctl.sh union-guard`，而现行 `ctl.sh` 的 case 表**已无该子命令** |
+
+根因不是 v1.5.1 的多 worker 改造，而是一个 **10-05 开机时起的遗留看门狗进程**：
+设备 uptime 13 天，它跑的是旧 inode 里的旧代码（旧参数、旧 upper 算法）；
+`ctl.sh` 升级到 v1.5.1 之后它依然每 20–30 秒判定「卡死」并用**同一错误参数**重启，
+upper 指向自己的挂载点 ⇒ 读 upper 的请求递归回本连接 ⇒ 所有 worker 等自己回复自己。
+
+### 三道防线
+
+1. **`union_fuse` 启动自检**：挂载前、挂载后各查一次 `/proc/self/mountinfo`
+   （纯内核文本，**不触发任何 FUSE 请求**，所以不会在检查时把自己卡住）。
+   `upper` 若等于或落在任何 `union` 挂载点之内，**拒绝启动 / 立即卸载退出**并打印命中的挂载点。
+   挂载后那一次还能抓住「`--upper` 恰好在 `--mount` 之下」这种挂载前查不出来的情形。
+2. **`ctl.sh` 的重叠检查扩到全部 union 挂载点**：原来只比对 `$union_mp` / `$union_target` 两个固定路径，
+   但 bind 会把它传播到 `/mnt/{user,installer,androidwritable}/0/emulated/0`，
+   还可能残留上一次启动的别的路径 —— 现在一律从 `/proc/mounts` 现取，命中即拒绝启动。
+3. **`union-guard` 子命令废弃**：显式报错并 `exit 2`。常驻看门狗只能由 `service.sh`
+   驱动单轮 `ctl.sh union-check`，从结构上消除「脚本里有第二套常驻循环」这个隐患。
+
+### 验证
+
+| 场景 | 结果 |
+|---|---|
+| `--upper /storage/emulated/0`（事故参数） | **0 秒拒绝启动**，`rc=1`，无残留挂载 |
+| `--upper /storage/emulated/0/DCIM/x`（子路径） | 同样拒绝 |
+| `--upper /mnt/union`、`/mnt/union/x` | 拒绝（ctl.sh 逻辑测试） |
+| 合法 upper（隔离点） | 正常挂载、146 条目可读、4 线程、`kill` 后 0 残留 |
+| 生产（MI8） | 5 个挂载点齐全、`waiting=0`、`ls /sdcard` 0.43 s、读写实测 OK、看门狗在线 |
+
+> 老设备若已连跑多天，升级后**建议重启一次**，让 `service.sh` 重新拉起看门狗循环
+> （旧守护进程不会被文件替换掉）。
+
 ## v1.5.1（versionCode 17）
 **union_fuse 从单线程改多 worker**：慢请求只占住一个 worker，其余继续服务。
 
