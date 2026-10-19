@@ -1,12 +1,12 @@
 {
-  "version": "v1.0.5",
-  "versionCode": 6,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/smsGateway-v1.0.5.zip",
+  "version": "v1.0.6",
+  "versionCode": 7,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/smsGateway-v1.0.6.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-smsgateway.md",
-  "zipFile": "smsGateway-v1.0.5.zip",
+  "zipFile": "smsGateway-v1.0.6.zip",
   "changelogFile": "CHANGELOG-smsgateway.md",
-  "size": 43913,
-  "sha256": "c628ed43175363f43706480e91522b801f18c898e06b22e3609ed91f21f83517",
-  "date": "2026-10-17",
-  "notes": "新增「检查更新 + 一键安装」：手机端 WebUI 多了升级卡片（当前/最新版本、清单来源、包大小、更新摘要），点一下自动下载→校验大小与 sha256→magisk --install-module，装完重启生效；Magisk 模块页也按 updateJson 自动提示新版本。同时补上 v1.0.4 的 action.sh —— Magisk 模块卡片上的「操作」按钮，点一下直接打开 WebUI（此前只有 KernelSU/APatch 认的 webroot/，Magisk 里没有任何入口）。升级安装不覆盖 config.conf。"
+  "size": 46873,
+  "sha256": "020ee2ed63c496a62ddb7f6b4ae3bedb14cd93f45143e0a2636c15da2bcdedd3",
+  "date": "2026-10-19",
+  "notes": "【修】手机切到蜂窝网络后控制台完全收不到上报：原来 hub_url 只能填一个地址，出门后内网地址不可达就彻底失联，而且手机端一声不响。现在 hub_url 支持用 | 分隔多个地址（如 内网|公网），按顺序自动回退，并记住上次成功的那个；启动时先探测一次。【新】手机端 WebUI 状态页多出「控制台连接」一行：正常/连不上（连续 N 次）+ 当前地址 + 时间 + 原因。【修】GET 请求改为按 HTTP 状态码判成败（原来分不清「没指令」和「连不上」）。【修】上报失败不再每 15 秒刷一条日志（第 1 次与每 20 次各记一条），恢复时记一条。升级不覆盖 config.conf。"
 }
