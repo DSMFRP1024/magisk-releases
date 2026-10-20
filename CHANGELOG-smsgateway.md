@@ -11,18 +11,22 @@
   于是每次点「检查更新」都要先白等 8 秒再碰运气，经常整条失败。
 - 现在按序回退 **6 个源**，国内可达的排前面：
 
-  | 源 | 国内实测 |
-  |---|---|
-  | `gh-proxy.com` | ✓ 0.35s |
-  | `gcore.jsdelivr.net` | ✓ 0.9s |
-  | `ghproxy.net` | ✓ 2.0s |
-  | `ghfast.top` | ✓ 5.0s |
-  | `raw.githubusercontent.com` | ✗ 25s 超时 |
-  | `cdn.jsdelivr.net` | ✗ 8s 超时 |
+  | 顺序 | 源 | 国内实测 | 实时性 |
+  |---|---|---|---|
+  | 1 | `gh-proxy.com` | ✓ 0.35s | 实时 |
+  | 2 | `ghproxy.net` | ✓ 2.0s | 实时 |
+  | 3 | `ghfast.top` | ✓ 5.0s | 实时 |
+  | 4 | `gcore.jsdelivr.net` | ✓ 0.9s | **有缓存** |
+  | 5 | `raw.githubusercontent.com` | ✗ 25s 超时 | 实时 |
+  | 6 | `cdn.jsdelivr.net` | ✗ 8s 超时 | **有缓存** |
 
   raw / cdn 保留在最后 —— 海外或挂代理时它们反而最快。**第一个源命中就返回**，不再串行等待。
-- Magisk 模块页的 `updateJson` 从 raw 换到 gcore 节点：模块页终于能提示新版本；
-  清单里的 `zipUrl` 同步从 `cdn.jsdelivr.net` 换到 gcore，在模块页点安装不会再下不下来。
+- ★ **jsDelivr 必须排在实时镜像后面**：它对 `@main` 分支有缓存，本次发版后实测
+  gcore 仍在返回上一版（v1.0.6）。有 versionCode 门控，不会误装旧版，但会让
+  「有新版本」显示成「看起来已是最新」。实时镜像在前就不会踩到。
+- Magisk 模块页的 `updateJson` 换成 gh-proxy 包装的实时地址：模块页终于能提示新版本；
+  清单里的 `zipUrl` 从 `cdn.jsdelivr.net` 换到 gcore（文件名带版本号，不存在缓存旧内容的问题），
+  在模块页点安装不会再下不下来。
 - 清单内容校验加严（必须同时满足「版本号像版本 + `zipFile` 非空 + `size` 为正」）：
   原来只要文件非空就采信，镜像返回错误页时会**静默显示「已是最新」**；
   更阴的情况是返回的是别的文档（README 里带 JSON 示例），会抠出别人的版本号显示成「有新版本」。

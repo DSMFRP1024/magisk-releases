@@ -5,8 +5,8 @@
   "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-smsgateway.md",
   "zipFile": "smsGateway-v1.0.7.zip",
   "changelogFile": "CHANGELOG-smsgateway.md",
-  "size": 48383,
-  "sha256": "e302f1f38a6c8bab7f6d3205cba6d65b5b1cab47ec4010b29712b9dff69ba063",
+  "size": 48639,
+  "sha256": "008b3f2a959e23e98d972379b42924f05a3de65e9f4843234cc841663bbb6da7",
   "date": "2026-10-20",
   "notes": "【修】模块页/WebUI 的「检查更新」在国内网络下几乎不可用：清单与安装包地址原来只写了 raw.githubusercontent.com（实测 25s 超时）和 cdn.jsdelivr.net（实测 SSL 8s 超时），两个都不通，每次点检查更新都要先白等 8 秒再碰运气，经常直接报失败 —— 手机在蜂窝网络下更明显。现在改为 6 个源按序回退（gh-proxy → gcore.jsDelivr → ghproxy.net → ghfast → raw → cdn.jsDelivr），国内网络下第一个源 0.35s 就命中，全部失败时才会报错并说清是「所有源都不通」。【修】Magisk 模块页的 updateJson 也从 raw 换成 gcore 节点，模块页终于能正常提示新版本，在里面直接点安装也不会再因为 zipUrl 指向 cdn.jsdelivr.net 而下载失败。【修】清单内容校验加严：原来只要文件非空就采信，镜像返回错误页时会静默显示「已是最新」；现在必须同时满足「版本号像版本 + zipFile 非空 + size 为正」，否则换下一个源。【修】WebUI 的「清单来源」改为显示实际命中的源名，不再只有 raw/jsDelivr 两种说法。★ 升级不覆盖 config.conf。"
 }
