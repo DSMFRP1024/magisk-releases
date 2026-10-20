@@ -1,8 +1,8 @@
 {
   "version": "v1.5.2",
   "versionCode": 18,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.2.zip",
-  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.2.zip",
+  "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
   "zipFile": "iscsimount-v1.5.2.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
   "size": 154106,

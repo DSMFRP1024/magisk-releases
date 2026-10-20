@@ -1,8 +1,8 @@
 {
   "version": "v1.5.14",
   "versionCode": 42,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.14.zip",
-  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/momGuard-v1.5.14.zip",
+  "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-momguard.md",
   "zipFile": "momGuard-v1.5.14.zip",
   "changelogFile": "CHANGELOG-momguard.md",
   "size": 185586,

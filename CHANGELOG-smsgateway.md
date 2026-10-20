@@ -2,6 +2,35 @@
 
 > 更新清单：[smsgateway.json](smsgateway.json)　·　源码仓（私有）：DSMFRP1024/smsGateway
 
+## v1.0.7（versionCode 8）— 2026-10-20
+
+**修「手机端升级地址在国内基本不可用」**
+
+- 根因：清单和安装包的地址只有两个 —— `raw.githubusercontent.com` 与
+  `cdn.jsdelivr.net`。国内实测**两个都不通**（前者 25s 超时、后者 8s SSL 超时），
+  于是每次点「检查更新」都要先白等 8 秒再碰运气，经常整条失败。
+- 现在按序回退 **6 个源**，国内可达的排前面：
+
+  | 源 | 国内实测 |
+  |---|---|
+  | `gh-proxy.com` | ✓ 0.35s |
+  | `gcore.jsdelivr.net` | ✓ 0.9s |
+  | `ghproxy.net` | ✓ 2.0s |
+  | `ghfast.top` | ✓ 5.0s |
+  | `raw.githubusercontent.com` | ✗ 25s 超时 |
+  | `cdn.jsdelivr.net` | ✗ 8s 超时 |
+
+  raw / cdn 保留在最后 —— 海外或挂代理时它们反而最快。**第一个源命中就返回**，不再串行等待。
+- Magisk 模块页的 `updateJson` 从 raw 换到 gcore 节点：模块页终于能提示新版本；
+  清单里的 `zipUrl` 同步从 `cdn.jsdelivr.net` 换到 gcore，在模块页点安装不会再下不下来。
+- 清单内容校验加严（必须同时满足「版本号像版本 + `zipFile` 非空 + `size` 为正」）：
+  原来只要文件非空就采信，镜像返回错误页时会**静默显示「已是最新」**；
+  更阴的情况是返回的是别的文档（README 里带 JSON 示例），会抠出别人的版本号显示成「有新版本」。
+- WebUI「清单来源」显示实际命中的源名。
+- 单源连接超时 8s → 6s：不通的源在建连阶段就卡死，等再久只会把 6 个源串成一分钟假死。
+
+> ★ 升级不覆盖 `config.conf`。
+
 ## v1.0.6（versionCode 7）— 2026-10-19
 
 **修「手机一出门（只有蜂窝）控制台就再也收不到上报」**
