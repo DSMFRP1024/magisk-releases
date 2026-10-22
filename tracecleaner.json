@@ -1,0 +1,12 @@
+{
+  "version": "v1.1.0",
+  "versionCode": 10100,
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.1.0.zip",
+  "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
+  "zipFile": "trace-cleaner-v1.1.0.zip",
+  "changelogFile": "CHANGELOG-tracecleaner.md",
+  "size": 30540,
+  "sha256": "f5942e9ba2000b82015f032be159ab1108b3610cf8728fa10b6ae4f4bf7278c4",
+  "date": "2026-10-22",
+  "notes": "新增「其他软件数据中的安装记录」检测与清理（--appdata）：用本机 425 个真实包名当特征，扫描第三方 App 的 databases/shared_prefs/files，按命中包名数分 strong(>=5)/weak。MI8 实测 157 个候选文件、strong 13 条（App Manager 362 hits 居首）。默认只删 cache 类，prefs/appdb/tool 需 --force。另修复 busybox find 不认 -size -4M 导致清单缓存误报为 0 的 bug。"
+}
