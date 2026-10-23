@@ -1,12 +1,12 @@
 {
-  "version": "v1.2.0",
-  "versionCode": 10200,
-  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.2.0.zip",
+  "version": "v1.3.0",
+  "versionCode": 10300,
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.0.zip",
   "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.2.0.zip",
+  "zipFile": "trace-cleaner-v1.3.0.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 49979,
-  "sha256": "47a10038685ce1e735df3e56cc171464f9058aecfbdee31c8570a569c218889b",
+  "size": 55650,
+  "sha256": "df54403dc54a9b7526a6fc32164cbf02a6dc2cf58da9952a625e491f67a7aadb",
   "date": "2026-10-23",
-  "notes": "新增设备端 WebUI：tc web start 后经 adb forward 或局域网用浏览器完成扫描/清理/日志全部操作（busybox httpd + CGI，零外部依赖）。默认只听 127.0.0.1，敏感接口校验随机令牌，确认清理需手输 CONFIRM。MI8 实测全接口通过（status/scan/result/clean dry-run/verify/log），扫描异步、清理同步、任务互斥。另修复 busybox grep BRE 的 | 不生效导致 clean 统计 items=0。"
+  "notes": "新增在线升级：module.prop 配 updateJson，Magisk 模块页可直接更新；WebUI 多一个「更新」标签（检查更新 / 下载并安装 / 安装输出），命令行 tc update 与 tc update install。清单走公开分发仓，raw 优先、jsDelivr 回退；下载后按 size 与 sha256 校验，再交给 magisk --install-module，装到 modules_update，重启生效。"
 }

@@ -1,5 +1,22 @@
 # TraceCleaner CHANGELOG
 
+## v1.3.0（2026-10-23）
+
+**新增在线升级（检测更新 + 一键安装）**
+
+- `module.prop` 配 `updateJson`，Magisk 应用的模块页可直接点更新
+- 命令行：`tc update`（检查）· `tc update install`（下载并安装）· `tc update json`（机读）
+- WebUI 新增「更新」标签：检查更新 / 更新说明与包大小 sha256 / 下载并安装 / 安装输出；
+  有新版时导航上的「更新」带红点，进页面静默探一次
+- 实现要点：
+  - 清单走公开分发仓 `DSMFRP1024/magisk-releases`（设备端无 GitHub 凭据，私有源码仓拉不到）；
+    **raw 优先、jsDelivr 回退**，来源回传界面
+  - 下载器探测式：系统 `curl` 优先（校验证书），Magisk busybox `wget` 兜底（不校验证书）
+  - 无 jq：`tr -d '\r\n'` 压行后 sed 取值（**不能连空格删**，否则吃掉 notes 里的空格）
+  - 校验：先比 `size`，再比 `sha256`，一致才交给 `magisk --install-module`
+  - 装在 `modules_update/`，**必须重启才生效**；界面与命令行都显式提示
+  - 版本判定用 `versionCode` 门控（`[ lat -gt cur ] 2>/dev/null`），清单滞后的 CDN 只会晚提示、不会误装旧版
+
 ## v1.2.0（2026-10-23）
 
 **新增设备端 WebUI（浏览器操作与查看）**
