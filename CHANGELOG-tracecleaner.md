@@ -1,5 +1,23 @@
 # TraceCleaner CHANGELOG
 
+## v1.4.3（2026-10-23）
+
+**修「管理器里看不到更新」—— 清单源换掉**
+
+真机实测发现：v1.4.2 发布后，`cdn.jsdelivr.net` 对 `@main` 分支的清单**仍返回 v1.3.0**
+（`versionCode=10300`），比设备上已装的 10401 还小。管理器拿这份清单跟本地比，判定「已是最新」，
+于是永远不提示更新 —— 这比「更新失败」更难发现。
+
+- `module.prop` 的 `updateJson` 改为 **ghfast.top 镜像**
+  （`https://ghfast.top/https://raw.githubusercontent.com/DSMFRP1024/magisk-releases/main/tracecleaner.json`）。
+  它是 raw 的国内代理、回源即时，MI 8 实测可达且内容最新（raw 直连在国内常直接超时）。
+- `tc update` 内部镜像顺序改为 **ghfast → raw → jsDelivr**，并对 raw 单独用 8 秒超时
+  （原顺序把 raw 放第一，国内超时要白等 20 秒才轮到下一个源）。
+- 仍然保留「多源都问、取 versionCode 最大」的策略，防止任一镜像给旧清单。
+
+> 注意：这个修复装在设备上之后才生效。当前若是 v1.4.1 或更早，管理器仍按旧的 jsDelivr 地址检查，
+> 需要**手动装一次** v1.4.3。
+
 ## v1.4.2（2026-10-23）
 
 **KernelSU 桥自检 + 补齐 v1.4.1 漏掉的第二层差异**

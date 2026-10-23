@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.2",
-  "versionCode": 10402,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.4.2.zip",
-  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.4.2.zip",
+  "version": "v1.4.3",
+  "versionCode": 10403,
+  "zipUrl": "https://ghfast.top/https://raw.githubusercontent.com/DSMFRP1024/magisk-releases/main/trace-cleaner-v1.4.3.zip",
+  "changelog": "https://ghfast.top/https://raw.githubusercontent.com/DSMFRP1024/magisk-releases/main/CHANGELOG-tracecleaner.md",
+  "zipFile": "trace-cleaner-v1.4.3.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 85332,
-  "sha256": "8eec13e66c5310a3ee2e72ddf4439f02751972d3b5010aeabae1113ba92fd8ea",
+  "size": 85581,
+  "sha256": "7b0b2d7646dd0f0f152dadbfb991d50f2470f5e3283cc7ddf4dba612dd353e43",
   "date": "2026-10-23",
-  "notes": "KernelSU 桥自检 + 补齐 v1.4.1 漏掉的第二层差异。v1.4.1 只统一了「返回值形态」，但部分 KSU 分支的回调是单参数对象 cb({errno,stdout}) / cb({code,data})，页面按三位置参数解构 ⇒ stdout 位是 undefined ⇒ 依旧「命令无输出」。本版按回调实参个数分派；启动时用只读 status 探测 4 种调用签名并缓存可用的那个；桥全局名支持 ksu/$ksu/kernelsu/apatch/mmrl；顶部显示「桥 mN」；连不上时显示诊断卡片（桥对象、exec.length、四种探测结果、最后原始返回），截图即可定位。"
+  "notes": "修「管理器里看不到更新」。实测 jsDelivr 对 @main 的清单缓存极久：v1.4.2 发布后它仍返回 v1.3.0（versionCode 10300，比已装的 10401 还小），管理器据此判定「已是最新」，永远不会提示更新。本版把 module.prop 的 updateJson 改到 ghfast.top 镜像（raw 的国内代理，回源即时），tc update 内部镜像顺序改为 ghfast→raw→jsDelivr 并给 raw 单独 8 秒超时。含 v1.4.2 的全部 KernelSU 桥修复（回调实参分派 + 启动签名探测 + 诊断卡片）。"
 }
