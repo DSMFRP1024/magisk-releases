@@ -1,12 +1,12 @@
 {
-  "version": "v1.4.0",
-  "versionCode": 10400,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.4.0.zip",
+  "version": "v1.4.1",
+  "versionCode": 10401,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.4.1.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.4.0.zip",
+  "zipFile": "trace-cleaner-v1.4.1.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 71841,
-  "sha256": "6e0571f671601f51a484a8fb8bef467f398de6952981b00c6f7702de07bbb086",
+  "size": 82436,
+  "sha256": "63d41dadd5644aafad02a0831d5e7875fe6e6bece55deecd32e2563e9bd0d333",
   "date": "2026-10-23",
-  "notes": "补上「没有按钮、KernelSU 打不开 WebUI」：① 新增 action.sh，模块详情页从此有「操作」按钮，点一下起服务并用手机浏览器打开（URL 带令牌，免手输）；② 新增 webroot/index.html，KernelSU / APatch / MMRL 能在管理器内直接打开 WebUI（走 ksu.exec 执行 root 命令，不依赖 httpd、不联网、不用 adb），页面为手机排版，含概览/扫描/清理/更新四个标签；③ 新增 tc json 纯 JSON 操作层与 cgi-bin/json 接口，管理器 WebUI 与浏览器 WebUI 共用同一套逻辑；④ tc web open 一条命令起服务并开浏览器。MI 8 实测：操作按钮唤起浏览器成功、扫描/清理预演/更新全链路通过。"
+  "notes": "修复 KernelSU 上 WebUI 报「命令无输出：TypeError: Cannot use 'in' operator to search for 'stdout'」。根因：Android 16/KSU 的 ksu.exec(cmd) 同步返回 stdout 字符串，页面却按「返回 {errno,stdout,stderr} 对象」解析。本版统一兼容四种返回形态（同步字符串 / Promise 对象 / 纯回调 / 混合），且保证命令只执行一次；错误提示带退出码与可复现命令；result 解析失败提示输出被截断；web/ksu.html 改为打包时由 webroot/index.html 生成，避免旧副本残留。回归测试覆盖四种 ksu.exec 形态，全部出数。"
 }

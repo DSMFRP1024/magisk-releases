@@ -1,5 +1,33 @@
 # TraceCleaner CHANGELOG
 
+## v1.4.1（2026-10-23）
+
+**修复 KernelSU 上 WebUI 报「命令无输出：TypeError: Cannot use 'in' operator to search for 'stdout'」**
+
+真机环境：Android 16 / SDK 36 / KernelSU。该版本 `ksu.exec(cmd)` **同步返回 stdout 字符串**，
+而页面按「返回 `{errno, stdout, stderr}` 对象」去解析，`"stdout" in <字符串>` 直接抛 TypeError，
+被 catch 成 stderr，界面显示成「命令无输出」。
+
+KernelSU 各版本的 `exec` 返回形态实测有四种，本版统一兼容：
+
+| 形态 | `exec(cmd)` 返回 |
+|---|---|
+| 老版同步 | stdout 字符串 |
+| 新版异步 | `Promise<{errno,stdout,stderr}>` |
+| 回调式 | 调用 `exec(cmd, cb)`，返回 `undefined` |
+| 混合 | 同时返回 Promise 且调回调 |
+
+实现要点：
+
+- **只执行一次命令**（带回调调用 + 同时检查返回值，先到先用）。多调一次会让 `scan-start` 跑两遍。
+- 返回值统一归一化：字符串 → 当 stdout；对象 → 兼容 `stdout`/`output`/`result` 与 `errno`/`code`。
+- 错误提示带上退出码与可复现命令，不再是一句无信息量的「命令无输出」。
+- `result` 解析失败时提示「返回内容被截断」，引导改用浏览器版（KSU 的输出通道有长度上限）。
+- 打包时由 `webroot/index.html` 生成 `web/ksu.html`（此前是安装脚本 cp，容易残留旧副本）。
+
+回归测试：本地用假 `ksu` 桥模拟上述四种形态（命令真实转发到设备执行），
+四种全部出数且 `exec` 调用次数一致；另加真实数据断言（425 已装 / 1 已卸载 / 1 残留 / 13 强证据）。
+
 ## v1.4.0（2026-10-23）
 
 **补上「没有操作按钮」和「KernelSU 打不开 WebUI」**
