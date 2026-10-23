@@ -1,5 +1,18 @@
 # TraceCleaner CHANGELOG
 
+## v1.3.1（2026-10-23）
+
+**修复真机暴露的更新链路问题（v1.3.0 首发即踩）**
+
+- 同名 zip 重发过两次（55650 → 56640 字节）导致 jsDelivr 边缘节点清单与包不同步，
+  安装前的 `size` 校验必然失败。**发版纪律：内容一变就升 `versionCode` 并换文件名，
+  绝不在同一版本号下重发不同内容的包。**
+- `tc update install` 改为**逐源校验**：某个源给的包大小或 sha256 对不上就自动换下一个源，
+  而不是直接判失败；全部不一致才报错，并提示"等 5~10 分钟让 CDN 缓存同步"。
+- 镜像顺序按国内真机实测调整：`raw` 与 `gcore.jsdelivr.net` 在 MI 8 上直连不通，
+  只有 `cdn.jsdelivr.net` 稳定可达 ⇒ 顺序 raw → cdn.jsdelivr → gcore，且清单超时压到 20s。
+- `updateJson` / `zipUrl` 一并改用 `cdn.jsdelivr.net`（Magisk 应用侧同样走可达域名）。
+
 ## v1.3.0（2026-10-23）
 
 **新增在线升级（检测更新 + 一键安装）**
