@@ -1,12 +1,12 @@
 {
-  "version": "v1.3.1",
-  "versionCode": 10301,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.1.zip",
+  "version": "v1.3.2",
+  "versionCode": 10302,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.2.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.3.1.zip",
+  "zipFile": "trace-cleaner-v1.3.2.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 56799,
-  "sha256": "7cf2bce02c4819690656fe08816569bf15eab7e0fd9234c4dc8b84ad49dd582b",
+  "size": 56936,
+  "sha256": "0b6f3208a5247827f84585088feed3e5153bacd500c602e75169bc7f7e695b3b",
   "date": "2026-10-23",
-  "notes": "新增在线升级：Magisk 模块页可更新，WebUI 多一个「更新」标签，命令行 tc update / tc update install。本版修复首发踩到的问题：同名 zip 重发导致 jsDelivr 清单与包不同步、size 校验必然失败；现改为逐源校验（不符就换下一个镜像），镜像顺序按国内实测排序（raw → cdn.jsdelivr → gcore）。下载后按 size 与 sha256 校验，再交给 magisk --install-module，装到 modules_update，重启生效。"
+  "notes": "在线升级：Magisk 模块页可更新，WebUI 有「更新」标签，命令行 tc update / tc update install。本版修复清单缓存问题（请求带时间戳强制回源，否则刚发布的版本看不见），并改为逐源校验（包大小或 sha256 不符就自动换下一个镜像）。镜像顺序按国内实测排序：raw → cdn.jsdelivr → gcore。装到 modules_update，重启生效。"
 }
