@@ -1,12 +1,12 @@
 {
   "version": "v1.3.0",
   "versionCode": 10300,
-  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.0.zip",
-  "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.0.zip",
+  "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
   "zipFile": "trace-cleaner-v1.3.0.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 55650,
-  "sha256": "df54403dc54a9b7526a6fc32164cbf02a6dc2cf58da9952a625e491f67a7aadb",
+  "size": 56640,
+  "sha256": "dbca3ce13787dbdc7c6cfe9b4387c1e64e8c4715950815c28ddaeddd4b48d263",
   "date": "2026-10-23",
-  "notes": "新增在线升级：module.prop 配 updateJson，Magisk 模块页可直接更新；WebUI 多一个「更新」标签（检查更新 / 下载并安装 / 安装输出），命令行 tc update 与 tc update install。清单走公开分发仓，raw 优先、jsDelivr 回退；下载后按 size 与 sha256 校验，再交给 magisk --install-module，装到 modules_update，重启生效。"
+  "notes": "新增在线升级：module.prop 配 updateJson，Magisk 模块页可直接更新；WebUI 多一个「更新」标签（检查更新 / 下载并安装 / 安装输出），命令行 tc update 与 tc update install。清单走公开分发仓，raw 优先、jsDelivr 回退（国内实测只有 cdn.jsdelivr.net 可达，已按此排序）；下载后按 size 与 sha256 校验，再交给 magisk --install-module，装到 modules_update，重启生效。"
 }
