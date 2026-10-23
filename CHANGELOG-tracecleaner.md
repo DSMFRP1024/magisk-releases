@@ -1,5 +1,37 @@
 # TraceCleaner CHANGELOG
 
+## v1.4.0（2026-10-23）
+
+**补上「没有操作按钮」和「KernelSU 打不开 WebUI」**
+
+之前只给了 `tc web start` + `adb forward` 那条路，管理器里既没有按钮，KernelSU 也认不到页面。本版把入口补齐：
+
+- **`action.sh`（模块页「操作」按钮）**
+  管理器只在模块根目录存在 `action.sh` 时显示按钮。点一下 = 启动 httpd + 用**手机浏览器**打开
+  `http://127.0.0.1:6789/?token=…`（页面读到 `?token=` 自动登录，地址栏随后抹掉参数）。
+  等价的命令行入口：`tc web open`。
+- **`webroot/index.html`（KernelSU / APatch / MMRL 内置 WebUI）**
+  管理器只认 `webroot/index.html`，且页面必须通过 `ksu.exec` 调 root 命令——httpd/CGI 那套在 WebView 里跑不起来。
+  新页面为手机排版，四个标签：概览（统计卡+状态）/ 扫描（六类明细+搜索）/ 清理（L1-L3 + appdata 档位 +
+  预演/真删，需输入 CONFIRM）/ 更新（检查+安装+日志）。**不依赖 httpd、不联网、不用 adb。**
+- **`tc json <op>` 纯 JSON 操作层**（`lib/json.sh`）
+  `status / scan-start / result / clean-start / job / update-start / check-update`，一行 JSON，无 HTTP 头。
+  管理器 WebUI 用 `ksu.exec` 调它；浏览器 WebUI 走新增的 `cgi-bin/json` 转调它——两边同一套逻辑，不会跑偏。
+- 同一份页面也装到 `web/ksu.html`，手机浏览器可直接用（`?token=` 免登录）。
+
+**实测（MI 8 / Magisk，v1.4.0）**
+
+- `action.sh` → 浏览器被拉起，页面显示 v1.4.0 / 端口 6789，免令牌登录
+- 管理器版页面在手机浏览器里渲染正常：425 已装 / 1 已卸载 / 1 残留孤儿 / 13 强证据痕迹文件
+- 清理预演 L2（后台+轮询）：`rc=0`、319 项、合计 318 项约 56 MB，报告落到 `/sdcard/TraceCleaner/`
+- 扫描（后台+轮询）：`running=true` → 完成出结果；`check-update` JSON 正常
+- `cgi-bin/json` 无令牌返回 401 语义、有令牌正常
+
+**修复**
+
+- `cgi-bin/json` 取不到第一个查询参数：busybox httpd 的 `QUERY_STRING` **不带前导 `?`**，
+  按 `.*[?&]op=` 匹配永远落空 ⇒ 改为按 `&` 切分后逐项匹配。
+
 ## v1.3.3（2026-10-23）
 
 **修复回退源把版本"倒退"的问题（真机踩到）**

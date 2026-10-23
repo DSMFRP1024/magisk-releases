@@ -10,7 +10,7 @@
 | **momGuard** | [momguard.json](momguard.json) | v1.5.14 | 185 586 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
 | **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.5.2 | 154 106 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
 | **smsGateway** | [smsgateway.json](smsgateway.json) | v1.0.6 | 46 873 B | [DSMFRP1024/smsGateway](https://github.com/DSMFRP1024/smsGateway) |
-| **traceCleaner** | [tracecleaner.json](tracecleaner.json) | v1.3.3 | 57 244 B | [DSMFRP1024/trace-cleaner](https://github.com/DSMFRP1024/trace-cleaner) |
+| **traceCleaner** | [tracecleaner.json](tracecleaner.json) | v1.4.0 | 71 841 B | [DSMFRP1024/trace-cleaner](https://github.com/DSMFRP1024/trace-cleaner) |
 
 > 另有配套服务端应用 **momGuard-hub**（飞牛 fnOS 上的 `.fpk`，接收手机上报的位置 / 步数 / 用量），
 > 不在本仓分发。

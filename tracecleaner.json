@@ -1,12 +1,12 @@
 {
-  "version": "v1.3.3",
-  "versionCode": 10303,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.3.zip",
+  "version": "v1.4.0",
+  "versionCode": 10400,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.4.0.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.3.3.zip",
+  "zipFile": "trace-cleaner-v1.4.0.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 57244,
-  "sha256": "362c59cf7344e929f5644098b26ffaf323d6c59ac674e2b8106308d0d1466171",
+  "size": 71841,
+  "sha256": "6e0571f671601f51a484a8fb8bef467f398de6952981b00c6f7702de07bbb086",
   "date": "2026-10-23",
-  "notes": "在线升级：Magisk 模块页可更新，WebUI 有「更新」标签，命令行 tc update / tc update install。本版修复回退源把版本倒退的问题（多源取最高版本，不再被缓存旧清单骗成已最新），清单带时间戳强制回源，安装包逐源校验 size 与 sha256。镜像顺序按国内实测：raw → ghfast.top → cdn.jsdelivr。装到 modules_update，重启生效。"
+  "notes": "补上「没有按钮、KernelSU 打不开 WebUI」：① 新增 action.sh，模块详情页从此有「操作」按钮，点一下起服务并用手机浏览器打开（URL 带令牌，免手输）；② 新增 webroot/index.html，KernelSU / APatch / MMRL 能在管理器内直接打开 WebUI（走 ksu.exec 执行 root 命令，不依赖 httpd、不联网、不用 adb），页面为手机排版，含概览/扫描/清理/更新四个标签；③ 新增 tc json 纯 JSON 操作层与 cgi-bin/json 接口，管理器 WebUI 与浏览器 WebUI 共用同一套逻辑；④ tc web open 一条命令起服务并开浏览器。MI 8 实测：操作按钮唤起浏览器成功、扫描/清理预演/更新全链路通过。"
 }
