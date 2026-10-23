@@ -1,5 +1,16 @@
 # TraceCleaner CHANGELOG
 
+## v1.3.3（2026-10-23）
+
+**修复回退源把版本"倒退"的问题（真机踩到）**
+
+- 现象：`check-update` 显示 v1.3.2 有更新，紧接着点安装却返回「已是最新（v1.3.0）」。
+  原因是 raw 偶发不可达时回退到 jsDelivr，而 jsDelivr 对 `@main` 缓存很久，回的是旧清单。
+- 改为**多源都问一遍、取 `versionCode` 最大的那份**；一旦某个源给出的版本已高于当前版本，
+  立即停止（不必等更慢的源）。
+- 镜像按 MI 8 实测重排：`raw` → `ghfast.top`（raw 的国内代理，同样回源）→ `cdn.jsdelivr.net`（最后兜底）。
+  实测不可达的 `gcore.jsdelivr.net` / `raw.gitmirror.com` / `cdn.statically.io` 已剔除。
+
 ## v1.3.2（2026-10-23）
 
 - 清单请求带 `?ts=<当前秒级时间戳>`：raw 与 jsDelivr 的边缘缓存会让**刚发布**的版本"看不见"

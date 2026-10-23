@@ -1,12 +1,12 @@
 {
-  "version": "v1.3.2",
-  "versionCode": 10302,
-  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.2.zip",
+  "version": "v1.3.3",
+  "versionCode": 10303,
+  "zipUrl": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.3.3.zip",
   "changelog": "https://cdn.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.3.2.zip",
+  "zipFile": "trace-cleaner-v1.3.3.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 56936,
-  "sha256": "0b6f3208a5247827f84585088feed3e5153bacd500c602e75169bc7f7e695b3b",
+  "size": 57244,
+  "sha256": "362c59cf7344e929f5644098b26ffaf323d6c59ac674e2b8106308d0d1466171",
   "date": "2026-10-23",
-  "notes": "在线升级：Magisk 模块页可更新，WebUI 有「更新」标签，命令行 tc update / tc update install。本版修复清单缓存问题（请求带时间戳强制回源，否则刚发布的版本看不见），并改为逐源校验（包大小或 sha256 不符就自动换下一个镜像）。镜像顺序按国内实测排序：raw → cdn.jsdelivr → gcore。装到 modules_update，重启生效。"
+  "notes": "在线升级：Magisk 模块页可更新，WebUI 有「更新」标签，命令行 tc update / tc update install。本版修复回退源把版本倒退的问题（多源取最高版本，不再被缓存旧清单骗成已最新），清单带时间戳强制回源，安装包逐源校验 size 与 sha256。镜像顺序按国内实测：raw → ghfast.top → cdn.jsdelivr。装到 modules_update，重启生效。"
 }
