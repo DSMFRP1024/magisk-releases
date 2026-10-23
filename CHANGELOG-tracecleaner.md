@@ -1,5 +1,32 @@
 # TraceCleaner CHANGELOG
 
+## v1.2.0（2026-10-23）
+
+**新增设备端 WebUI（浏览器操作与查看）**
+
+`tc web start` 在手机上拉起 busybox httpd（默认 `127.0.0.1:6789`），
+电脑 `adb forward tcp:6789 tcp:6789` 后浏览器打开 `http://127.0.0.1:6789` 即可：
+
+- **概览**：统计卡片 + 服务/任务状态
+- **扫描结果**：七类明细（已安装/已卸载/残留孤儿/历史来源/应用清单缓存/应用数据快照），可搜索、可排序
+- **清理**：选 L1/L2/L3 + appdata 档位 + LSPosed/force/apks；先「预演」看输出，再手输 `CONFIRM` 真删
+- **日志**：clean.log / scan.log / 最近清理输出，10 秒自动刷新
+
+实现要点：
+
+- 零外部依赖：busybox httpd + CGI（shell），页面是单文件原生 JS，设备不用联网
+- 扫描**异步**（后台 setsid 跑，轮询自动刷新）；清理**同步**（前端 loading）；scan/clean 任务互斥
+- 安全：默认只听回环；`--lan` 时全部敏感接口校验 32 位随机令牌（`tc web status` 查看）；
+  确认清理必须输入 `CONFIRM`；令牌可用 `tc web token` 更换
+- `service.sh` 开机自启（`touch web/disabled` 可关）
+- MI 8 实测：status / scan（后台约 2 分钟）/ result（121 KB JSON）/ clean dry-run（306 项 56 MB）/ verify / log 全部通过
+
+**修复**
+
+- busybox grep 的 BRE 不认 `\|`  alternation，导致 WebUI 清理统计 `items` 恒为 0；改为 `grep -E`。
+- `tc web` 端口文件路径拼接多了一层 `/web`（`.../web/web/port`）导致写入失败。
+- httpd 默认自行 daemon 化会与 start-stop-daemon 的 pid 文件脱同步，启动命令加 `-f` 由 ssd 守护。
+
 ## v1.1.0（2026-10-22）
 
 **新增「其他软件数据中的安装记录」检测与清理（`--appdata`）**

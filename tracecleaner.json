@@ -1,12 +1,12 @@
 {
-  "version": "v1.1.0",
-  "versionCode": 10100,
-  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.1.0.zip",
+  "version": "v1.2.0",
+  "versionCode": 10200,
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/trace-cleaner-v1.2.0.zip",
   "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-tracecleaner.md",
-  "zipFile": "trace-cleaner-v1.1.0.zip",
+  "zipFile": "trace-cleaner-v1.2.0.zip",
   "changelogFile": "CHANGELOG-tracecleaner.md",
-  "size": 30540,
-  "sha256": "f5942e9ba2000b82015f032be159ab1108b3610cf8728fa10b6ae4f4bf7278c4",
-  "date": "2026-10-22",
-  "notes": "新增「其他软件数据中的安装记录」检测与清理（--appdata）：用本机 425 个真实包名当特征，扫描第三方 App 的 databases/shared_prefs/files，按命中包名数分 strong(>=5)/weak。MI8 实测 157 个候选文件、strong 13 条（App Manager 362 hits 居首）。默认只删 cache 类，prefs/appdb/tool 需 --force。另修复 busybox find 不认 -size -4M 导致清单缓存误报为 0 的 bug。"
+  "size": 49979,
+  "sha256": "47a10038685ce1e735df3e56cc171464f9058aecfbdee31c8570a569c218889b",
+  "date": "2026-10-23",
+  "notes": "新增设备端 WebUI：tc web start 后经 adb forward 或局域网用浏览器完成扫描/清理/日志全部操作（busybox httpd + CGI，零外部依赖）。默认只听 127.0.0.1，敏感接口校验随机令牌，确认清理需手输 CONFIRM。MI8 实测全接口通过（status/scan/result/clean dry-run/verify/log），扫描异步、清理同步、任务互斥。另修复 busybox grep BRE 的 | 不生效导致 clean 统计 items=0。"
 }
