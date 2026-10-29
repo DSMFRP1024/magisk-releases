@@ -8,7 +8,7 @@
 | 模块 | 更新清单 | 最新版 | 包大小 | 源码仓（私有） |
 | --- | --- | --- | --- | --- |
 | **momGuard** | [momguard.json](momguard.json) | v1.5.14 | 185 586 B | [DSMFRP1024/momGuard](https://github.com/DSMFRP1024/momGuard) |
-| **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.5.2 | 154 106 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
+| **iscsiMount** | [iscsimount.json](iscsimount.json) | v1.5.3 | 153 615 B | [DSMFRP1024/iscsiMount](https://github.com/DSMFRP1024/iscsiMount) |
 | **smsGateway** | [smsgateway.json](smsgateway.json) | v1.0.6 | 46 873 B | [DSMFRP1024/smsGateway](https://github.com/DSMFRP1024/smsGateway) |
 | **traceCleaner** | [tracecleaner.json](tracecleaner.json) | v1.4.1 | 82 436 B | [DSMFRP1024/trace-cleaner](https://github.com/DSMFRP1024/trace-cleaner) |
 

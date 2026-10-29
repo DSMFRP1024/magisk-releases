@@ -1,12 +1,12 @@
 {
-  "version": "v1.5.2",
-  "versionCode": 18,
-  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.2.zip",
+  "version": "v1.5.3",
+  "versionCode": 19,
+  "zipUrl": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/iscsimount-v1.5.3.zip",
   "changelog": "https://gcore.jsdelivr.net/gh/DSMFRP1024/magisk-releases@main/CHANGELOG-iscsimount.md",
-  "zipFile": "iscsimount-v1.5.2.zip",
+  "zipFile": "iscsimount-v1.5.3.zip",
   "changelogFile": "CHANGELOG-iscsimount.md",
-  "size": 154106,
-  "sha256": "83fb7c443a9bbbd7865e0cb4aef38b3eda098eb28203145825e02f24d4a4ba0c",
-  "date": "2026-10-19",
-  "notes": "加「自我递归」启动自检，把「运行中永久卡死」变成「启动即报错」。事故（2026-10-18 真机）：一个 10-05 开机起的遗留看门狗进程（旧版 ctl.sh 的 union-guard 常驻循环）活了 13 天，新版 ctl.sh 早已删掉该子命令却换不掉它 —— 它每 20-30 秒用 `--upper /storage/emulated/0`（正是 union 自己的 bind 目标）且不带 --workers 重启，读 upper 的请求递归回本连接，4 个 worker 全堵在 newfstatat、waiting=9 只增不减、kill -9 与 umount 全失效。三道防线：① union_fuse 在挂载前/后各查一次 /proc/self/mountinfo（纯文本，不触发 FUSE），upper 落在任何 union 挂载点内就拒绝启动或立即卸载退出；② ctl.sh 的重叠检查从固定的两个路径扩到 /proc/mounts 里全部 union 挂载点（bind 会传播出 4 个兄弟点，还可能是上次残留）；③ union-guard 显式报废弃 exit 2，常驻看门狗只能由 service.sh 驱动单轮 union-check。验证：事故参数 0 秒拒绝启动且无残留挂载；合法 upper 在隔离点正常挂载 146 条目、4 线程、kill 后 0 残留；生产 5 个挂载点齐全、waiting=0、ls /sdcard 0.43s、读写 OK。"
+  "size": 153615,
+  "sha256": "17e38196ebfb8b28c7dd053591286d26b163b778d94c14c6bc23ee6036e0dd21",
+  "date": "2026-10-29",
+  "notes": "修看门狗「误杀」—— 把慢 IO 当成死锁的判定彻底去掉。事故（2026-10-29 真机）：开机 26 分钟内看门狗连判两次「union 卡死」并 abort 全部挂载，用户侧表现是下载器报「文件创建失败」、下载列表 40.15MB/0B，logcat 见 `close failed: ENOTCONN`；每次 abort 还在 exfat 上留 \"Volume was not properly unmounted\" 脏位。根因不是 union 坏了，是判据过时：union_fuse_stuck() 只 awk /proc/<pid>/stat 看**主线程**是否 D —— 单线程时代的写法；v1.5.1 起是 4 worker，主线程写 upper（在 iSCSI/NAS 上）时会连续 D 几十秒到上百秒，而另外 3 个 worker 照样服务、waiting 一直在变（两次日志 waiting 分别「连续 1 轮」「连续 0 轮」不变即铁证）。四条改动：① 新增 union_thread_stats() 统计全部 worker，union_fuse_stuck() 改为「≥线程数-1 个同时在 D」才算无可用 worker；② do_union_check 的 D 判据同步改为全线程口径；③ 命中后、abort 前加活性探测 `timeout 3 ls /mnt/union`，能返回就判为慢 IO 跳过；④ 阈值 3 轮(90s) → 6 轮(180s)。验证：sh -n 通过；四组单测（真实环境 tot=4 d=0、PID 不存在、PID 指向非 union_fuse 防复用、指向真实进程）全符合预期；判据表驱动 6 场景（含 10-29 误杀现场 waiting=7 且 1/4 线程 D）全部不再命中；热替换后手动跑一轮 union-check rc=0、union.stuck=「0 0 0」；在出问题的那条 App 私有目录里模拟下载器完整流程（写 10 MiB → sync → rename）1 秒完成、0 残留。ctl.sh 是每轮新进程调用，本次热替换零中断，不需要重启 union。"
 }

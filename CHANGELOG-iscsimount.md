@@ -2,6 +2,64 @@
 
 > 完整历史见源码仓：https://github.com/DSMFRP1024/iscsiMount
 
+## v1.5.3（versionCode 19）
+**修看门狗「误杀」：把慢 IO 当成死锁的判定彻底去掉。**
+
+### 用户侧现象（2026-10-29 真机）
+
+- 海阔视界下载列表：`海阔视界_V8.82_C5590_db53-64位` 显示 **40.15MB / 0B /「文件创建失败」**
+- 下载目录里留下 0 字节的 `.apk.download` 与空 `.apk.temp/` 目录，下载完全下不去
+- logcat：`java.io.IOException: close failed: ENOTCONN (Transport endpoint is not connected)`
+- `service.log` 显示开机 26 分钟内看门狗**连判两次卡死**并 abort 全部挂载：
+
+```
+19:43:30 看门狗: union 卡死（waiting=7 连续 1 轮不变，state=D 连续 3 轮）→ 自动救活
+19:46:23 看门狗: union 卡死（waiting=3 连续 0 轮不变，state=D 连续 3 轮）→ 自动救活
+```
+
+### 根因
+
+判据过时，不是 union 坏了。`union_fuse_stuck()` 只读 `/proc/<pid>/stat` 的**主线程**状态：
+
+```sh
+_st=$(awk '{print $3}' "/proc/$_p/stat")
+[ "$_st" = "D" ] && return 0
+```
+
+这是**单线程时代**的写法（那时主线程 D = 全体卡死）。v1.5.1 起 union_fuse 是 4 个 worker，
+主线程只是其中之一 —— 它写 upper（upper 在 iSCSI/NAS 上）时会连续 D 几十秒到上百秒，
+而另外 3 个 worker 照样在服务。
+
+铁证：两次命中的 waiting 分别是「**连续 1 轮**」「**连续 0 轮**」不变 —— 请求一直在流转，
+根本不是死锁。abort 一执行，所有 App 已打开的 fd 立刻变 `EIO/ENOTCONN`，
+正在下载的文件当场写失败；同时 exfat 每次都被判为「非正常卸载」。
+
+### 四条改动
+
+| # | 内容 |
+|---|---|
+| ① | 新增 `union_thread_stats()` 遍历 `/proc/<pid>/task/*` 统计全部 worker 的 D 数 |
+| ② | `union_fuse_stuck()` 改为「**≥线程数-1 个线程同时在 D**」才算无可用 worker（容许 1 个例外） |
+| ③ | 命中判据后、执行 abort 前加一道活性探测 `timeout 3 ls /mnt/union`，能返回就判定为慢 IO 并跳过 |
+| ④ | 阈值 3 轮（90s）→ **6 轮（180s）**，真死锁照样救得回 |
+
+`do_union_check` 的 D 轮次也只统计「几乎无可用线程」的情况，1~2 个线程在等 NAS 一律不计。
+
+### 验证
+
+| 项目 | 结果 |
+|---|---|
+| `sh -n` | OK |
+| `union_thread_stats` 真实环境 | `tot=4 d=0`，`union_fuse_stuck rc=1`（判未卡死） |
+| PID 不存在 / 指向非 union_fuse | 均 `rc=1`（防 PID 复用） |
+| PID 指向真实 union_fuse | `tot=4 d=0`，`rc=1` |
+| 判据表驱动 6 场景 | 含 10-29 误杀现场（waiting=7、1/4 线程 D）全部不再命中；4/4 D 或 waiting 不变 6 轮仍命中 |
+| 热替换后跑一轮 `union-check` | `rc=0`，`union.stuck=「0 0 0」` |
+| 模拟下载器完整流程 | 写 10 MiB → `sync` → `rename` 收尾，1 秒完成，0 残留 |
+
+`ctl.sh` 由 `service.sh` 每轮以新进程调用（每轮都重新读磁盘上的文件），
+所以本次**热替换即生效、零中断**，不需要重启 union，也不需要重启设备。
+
 ## v1.5.2（versionCode 18）
 **加「自我递归」启动自检：把「运行中永久卡死」变成「启动即报错」。**
 
